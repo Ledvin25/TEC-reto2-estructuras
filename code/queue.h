@@ -1,0 +1,1 @@
+// Esto va a ser una plantilla para las colas
