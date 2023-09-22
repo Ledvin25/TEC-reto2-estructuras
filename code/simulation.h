@@ -1,19 +1,64 @@
 // Aqui se van a trabajar todos los procesos necesarios para que la simulacion funcione
 
-// run() - Inicia la simulacion
+#include <iostream>
+#include <queue>
+#include <map>
 
-// stop() - Detiene la simulacion
+using namespace std;
 
-// pause() - Pausa la simulacion
+class Simulation {
+public:
 
-// resume() - Reanuda la simulacion
+    private:
+    // Cola de pedidos
+    queue<string> orders;
 
-// restart() - Reinicia la simulacion
+    // Inventario de ingredientes
+    map<string, int> inventory;
 
-// update() - Actualiza la simulacion
+    // Cola de personas
+    queue<string> queue;
 
-// orders - cola de pedidos
+    // Constructor
+    Simulation() {
+        // Inicializar otros atributos si es necesario
+    }
 
-// inventory - inventario de ingredientes
+    // Inicia la simulación
+    void run() {
+        cout << "Iniciando la simulación." << endl;
+        // Lógica para iniciar la simulación
+    }
 
-// queue - cola de personas
+    // Detiene la simulación
+    void stop() {
+        cout << "Deteniendo la simulación." << endl;
+        // Lógica para detener la simulación
+    }
+
+    // Pausa la simulación
+    void pause() {
+        cout << "Pausando la simulación." << endl;
+        // Lógica para pausar la simulación
+    }
+
+    // Reanuda la simulación
+    void resume() {
+        cout << "Reanudando la simulación." << endl;
+        // Lógica para reanudar la simulación
+    }
+
+    // Reinicia la simulación
+    void restart() {
+        cout << "Reiniciando la simulación." << endl;
+        // Lógica para reiniciar la simulación
+    }
+
+    // Actualiza la simulación
+    void update() {
+        cout << "Actualizando la simulación." << endl;
+        // Lógica para actualizar la simulación
+    }
+
+
+};
