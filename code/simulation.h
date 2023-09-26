@@ -36,18 +36,6 @@ public:
         // Lógica para detener la simulación
     }
 
-    // Pausa la simulación
-    void pause() {
-        cout << "Pausando la simulación." << endl;
-        // Lógica para pausar la simulación
-    }
-
-    // Reanuda la simulación
-    void resume() {
-        cout << "Reanudando la simulación." << endl;
-        // Lógica para reanudar la simulación
-    }
-
     // Reinicia la simulación
     void restart() {
         cout << "Reiniciando la simulación." << endl;
