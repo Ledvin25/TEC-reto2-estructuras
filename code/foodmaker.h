@@ -1,93 +1,105 @@
-// Aqui se va a trabajar las clases para crear comidas y va a tomar del simulation la cantidad de ingredientes que se van a tener en el inventario
-
 #include <iostream>
-#include <queue>
 #include <string>
+#include <vector>
 
-// Clase para crear una comida - Atributos: nombre, array de ingredientes | Metodos: Constructor, setters y getters
+// Clase para crear una comida - Atributos: nombre, vector de ingredientes | Métodos: Constructor, setters y getters
 
 class Comida
 {
-    private:
-        string nombre;
-        string ingredientes[5];
-    public:
-        Comida(){}
-        // Setters
-        void setNombre(string nombre)
-        {
-            this->nombre = nombre;
-        }
-        void setIngredientes(string ingredientes[5])
-        {
-            this->ingredientes = ingredientes;
-        }
-        // Getters
-        string getNombre()
-        {
-            return this->nombre;
-        }
-        string getIngredientes()
-        {
-            return this->ingredientes;
-        }
+private:
+    std::string nombre;
+    std::vector<std::string> ingredientes;
+
+public:
+    Comida() {}
+
+    // Setters
+    void setNombre(std::string nombre)
+    {
+        this->nombre = nombre;
+    }
+
+    void setIngredientes(const std::vector<std::string>& ingredientes)
+    {
+        this->ingredientes = ingredientes;
+    }
+
+    // Getters
+    std::string getNombre()
+    {
+        return this->nombre;
+    }
+
+    const std::vector<std::string>& getIngredientes()
+    {
+        return this->ingredientes;
+    }
 };
 
-// Clase para crear un refresco - Atributos: nombre, array de ingredientes | Metodos: Constructor, setters y getters
+// Clase para crear un refresco - Atributos: nombre, vector de ingredientes | Métodos: Constructor, setters y getters
 
 class Refresco
 {
-    private:
-        string nombre;
-        string ingredientes[5];
-    public:
-        Refresco(){}
-        // Setters
-        void setNombre(string nombre)
-        {
-            this->nombre = nombre;
-        }
-        void setIngredientes(string ingredientes[5])
-        {
-            this->ingredientes = ingredientes;
-        }
-        // Getters
-        string getNombre()
-        {
-            return this->nombre;
-        }
-        string getIngredientes()
-        {
-            return this->ingredientes;
-        }
+private:
+    std::string nombre;
+    std::vector<std::string> ingredientes;
+
+public:
+    Refresco() {}
+
+    // Setters
+    void setNombre(std::string nombre)
+    {
+        this->nombre = nombre;
+    }
+
+    void setIngredientes(const std::vector<std::string>& ingredientes)
+    {
+        this->ingredientes = ingredientes;
+    }
+
+    // Getters
+    std::string getNombre()
+    {
+        return this->nombre;
+    }
+
+    const std::vector<std::string>& getIngredientes()
+    {
+        return this->ingredientes;
+    }
 };
 
-// Clase para crear un postre - Atributos: nombre, array de ingredientes | Metodos: Constructor, setters y getters
+// Clase para crear un postre - Atributos: nombre, vector de ingredientes | Métodos: Constructor, setters y getters
 
 class Postre
 {
-    private:
-        string nombre;
-        string ingredientes[5];
-    public:
-        Postre(){}
-        // Setters
-        void setNombre(string nombre)
-        {
-            this->nombre = nombre;
-        }
-        void setIngredientes(string ingredientes[5])
-        {
-            this->ingredientes = ingredientes;
-        }
-        // Getters
-        string getNombre()
-        {
-            return this->nombre;
-        }
-        string getIngredientes()
-        {
-            return this->ingredientes;
-        }
-};
+private:
+    std::string nombre;
+    std::vector<std::string> ingredientes;
 
+public:
+    Postre() {}
+
+    // Setters
+    void setNombre(std::string nombre)
+    {
+        this->nombre = nombre;
+    }
+
+    void setIngredientes(const std::vector<std::string>& ingredientes)
+    {
+        this->ingredientes = ingredientes;
+    }
+
+    // Getters
+    std::string getNombre()
+    {
+        return this->nombre;
+    }
+
+    const std::vector<std::string>& getIngredientes()
+    {
+        return this->ingredientes;
+    }
+};

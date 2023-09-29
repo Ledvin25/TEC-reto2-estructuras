@@ -2,6 +2,7 @@
     "tiempoSimulacionHora": 20000, 
     "minHora" : 11,
     "maxHora" : 21,
+    "velocidadDeLlegada" : 1,
     "ventanasParaPedido" : 5, 
     "velocidadParaAtender" : "ventanasParaPedido", 
     "ventanasParaRetirar" : 2,
