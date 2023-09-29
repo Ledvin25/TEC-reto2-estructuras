@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+// Siento que hay una manera mas optima de hacer esto, ya que practicamente son iguales, pero no se me ocurre como sin joder las demas clases.
+
 // Clase para crear una comida - Atributos: nombre, vector de ingredientes | Métodos: Constructor, setters y getters
 
 class Comida

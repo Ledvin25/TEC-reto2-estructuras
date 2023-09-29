@@ -2,8 +2,10 @@
 
 #include <iostream>
 #include <queue>
+#include <string>
 #include <map>
 #include "order.h"
+#include "orderQueue.h"
 
 using namespace std;
 
@@ -12,7 +14,7 @@ public:
 
     private:
     // Cola de pedidos
-    queue<string> orders;
+    OrderQueue orderQueue;
 
     // Inventario de ingredientes
     map<string, int> inventory;

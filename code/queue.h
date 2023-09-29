@@ -1,47 +1,44 @@
-// Esto va a ser una plantilla para las colas
-
 #include <iostream>
 #include <vector>
 
+template <typename T>
 class Queue 
 {
-    private:
-        vector<int> queueList;
+private:
+    std::vector<T> queueList;
 
-    public:
+public:
+    Queue() {}
 
-        Queue(){}
+    void push(const T &data)
+    {
+        queueList.push_back(data);
+    }
 
-        void push(int data)
-        {
-            queueList.push_back(data);
-        }
+    T pop()
+    {
+        T result = queueList.front();
+        queueList.erase(queueList.begin());
+        return result;
+    }
 
-        int pop()
-        {
-            int result = queueList.front();
-            queueList.erase(queueList.begin());
-            return result;
-        }
+    T front()
+    {
+        return queueList.front();
+    }
 
-        int front()
-        {
-            return queueList.front();
-        }
+    T back()
+    {
+        return queueList.back();
+    }
 
-        int back()
-        {
-            return queueList.back();
-        }
+    size_t size()
+    {
+        return queueList.size();
+    }
 
-        int size()
-        {
-            return queueList.size();
-        }
-
-        bool empty()
-        {
-            return queueList.empty();
-        }
-
+    bool empty()
+    {
+        return queueList.empty();
+    }
 };

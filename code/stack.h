@@ -1,34 +1,34 @@
-// Esto va a ser una plantilla para las pilas
-
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
+template <typename T>
 class Stack 
 {
-    private:
-        vector<int> stackList;
+private:
+    std::vector<T> stackList;
 
-    public:
+public:
+    Stack() {}
 
-        Stack(){}
+    void push(const T &data)
+    {
+        stackList.push_back(data);
+    }
 
-        void push(int data)
-        {
-            stackList.push_back(data);
-        }
+    T pop()
+    {
+        T result = stackList.back();
+        stackList.pop_back();
+        return result;
+    }
 
-        int pop()
-        {
-            int result = stackList.back();
-            stackList.pop_back();
-            return result;
-        }
+    T peek()
+    {
+        return stackList.back();
+    }
 
-        int top()
-        {
-            return stackList.back();
-        }
-
+    bool isEmpty()
+    {
+        return stackList.empty();
+    }
 };
