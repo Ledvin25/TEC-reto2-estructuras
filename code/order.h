@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "foodmaker.h"
+#include "productMaker.h"
 
 using namespace std;
 
@@ -10,8 +10,8 @@ enum EstadoPedido {
     SIN_PROCESAR,
     PROCESADO, 
     PREPARADO,
-    SIN_PAGAR,
     PAGADO,
+    ENTREGADO
 };
 
 // Clase Order que puede contener Food, Drink y Dessert
@@ -72,19 +72,15 @@ public:
     void process()
     {
         status = PROCESADO;
+        // Cuando se escoge del menu de la ventana, se agregan a la orden los nombres de los productos
     }
 
     // Preparar pedido
     void prepare()
     {
         status = PREPARADO;
-    }
-
-    // Listo para pagar
-
-    void readyToPay()
-    {
-        status = SIN_PAGAR;
+        // Se comprueba que los productos escogidos, tengan stock suficiente en inventario, en caso de ser si se utilizan los ingredientes
+        // por lo tanto se restan de la pila correspondiente y la orden esta lista para continuar con el pago
     }
 
     // Pagar pedido
@@ -92,6 +88,14 @@ public:
     void pay()
     {
         status = PAGADO;
+        // Se comprueba que el pago sea correcto, en caso de serlo se procede a la entrega del pedido
+    }
+
+    // Entregar pedido
+    void deliver()
+    {
+        status = ENTREGADO;
+        // Se entrega el pedido y se saca de la cola de pedidos
     }
 
     // Obtener el estado del pedido
@@ -100,7 +104,4 @@ public:
         return status;
     }
 
-
 };
-
-// Clase que mantiene una cola de objetos Order

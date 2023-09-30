@@ -17,7 +17,17 @@ class Inventory
 
     public:
 
-        // Metodos default
+        // Set y get maxIngredientQuantity para el JSON
+
+        void setMaxIngredientQuantity(int maxIngredientQuantity)
+        {
+            this->maxIngredientQuantity = maxIngredientQuantity;
+        }
+
+        int getMaxIngredientQuantity()
+        {
+            return maxIngredientQuantity;
+        }
 
         // Constructor por defecto
         Inventory() {}
