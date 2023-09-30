@@ -13,8 +13,11 @@ class Inventory
         vector<Stack<string>> foodIngredient; // Vector de stacks de productos'
         vector<Stack<string>> drinkIngredient; // Vector de stacks de productos'
         vector<Stack<string>> dessertIngredient; // Vector de stacks de productos'
+        int maxIngredientQuantity; // Cantidad maxima de ingredientes
 
     public:
+
+        // Metodos default
 
         // Constructor por defecto
         Inventory() {}
@@ -37,44 +40,8 @@ class Inventory
             this->dessertIngredient.push_back(dessertIngredient);
         }
 
-        // Metodo para agregar un ingrediente a la pila de ingredientes de comida por nombre que es un string
-        void addFoodIngredientByName(const string &foodIngredientName)
-        {
-            for (int i = 0; i < foodIngredient.size(); i++)
-            {
-                if (foodIngredient[i].peek() == foodIngredientName)
-                {
-                    foodIngredient[i].push(foodIngredientName);
-                }
-            }
-        }
-
-        // Metodo para agregar un ingrediente a la pila de ingredientes de bebida por nombre que es un string
-        void addDrinkIngredientByName(const string &drinkIngredientName)
-        {
-            for (int i = 0; i < drinkIngredient.size(); i++)
-            {
-                if (drinkIngredient[i].peek() == drinkIngredientName)
-                {
-                    drinkIngredient[i].push(drinkIngredientName);
-                }
-            }
-        }
-
-        // Metodo para agregar un ingrediente a la pila de ingredientes de postre por nombre que es un string
-        void addDessertIngredientByName(const string &dessertIngredientName)
-        {
-            for (int i = 0; i < dessertIngredient.size(); i++)
-            {
-                if (dessertIngredient[i].peek() == dessertIngredientName)
-                {
-                    dessertIngredient[i].push(dessertIngredientName);
-                }
-            }
-        }
-
         // Metodo para sacar un ingredientes de la pila de ingredientes de comida por nombre que es un string
-        void removeFoodIngredientByName(const string &foodIngredientName)
+        void UseFoodIngredientByName(const string &foodIngredientName)
         {
             for (int i = 0; i < foodIngredient.size(); i++)
             {
@@ -86,7 +53,7 @@ class Inventory
         }
 
         // Metodo para sacar un ingredientes de la pila de ingredientes de bebida por nombre que es un string
-        void removeDrinkIngredientByName(const string &drinkIngredientName)
+        void UseDrinkIngredientByName(const string &drinkIngredientName)
         {
             for (int i = 0; i < drinkIngredient.size(); i++)
             {
@@ -98,7 +65,7 @@ class Inventory
         }
 
         // Metodo para sacar un ingredientes de la pila de ingredientes de postre por nombre que es un string
-        void removeDessertIngredientByName(const string &dessertIngredientName)
+        void UseDessertIngredient(const string &dessertIngredientName)
         {
             for (int i = 0; i < dessertIngredient.size(); i++)
             {
@@ -110,7 +77,7 @@ class Inventory
         }
 
         // Metodo para comprobar si la pila de ingredientes de comida esta vacia por nombre que es un string
-        bool isFoodIngredientEmptyByName(const string &foodIngredientName)
+        bool isFoodIngredientEmpty(const string &foodIngredientName)
         {
             for (int i = 0; i < foodIngredient.size(); i++)
             {
@@ -122,7 +89,7 @@ class Inventory
         }
 
         // Metodo para comprobar si la pila de ingredientes de bebida esta vacia por nombre que es un string
-        bool isDrinkIngredientEmptyByName(const string &drinkIngredientName)
+        bool isDrinkIngredientEmpty(const string &drinkIngredientName)
         {
             for (int i = 0; i < drinkIngredient.size(); i++)
             {
@@ -134,7 +101,7 @@ class Inventory
         }
 
         // Metodo para comprobar si la pila de ingredientes de postre esta vacia por nombre que es un string
-        bool isDessertIngredientEmptyByName(const string &dessertIngredientName)
+        bool isDessertIngredientEmpty(const string &dessertIngredientName)
         {
             for (int i = 0; i < dessertIngredient.size(); i++)
             {
@@ -145,7 +112,48 @@ class Inventory
             }
         }
 
-        
-        
-        
+        // Metodo para comprar ingredientes de comida
+        void buyFoodIngredient(const string &foodIngredientName)
+        {
+            for (int i = 0; i < foodIngredient.size(); i++)
+            {
+                if (foodIngredient[i].peek() == foodIngredientName)
+                {
+                    for (int j = 0; j < maxIngredientQuantity; j++)
+                    {
+                        foodIngredient[i].push(foodIngredientName);
+                    }
+                }
+            }
+        }
+
+        // Metodo para comprar ingredientes de bebida
+        void buyDrinkIngredient(const string &drinkIngredientName)
+        {
+            for (int i = 0; i < drinkIngredient.size(); i++)
+            {
+                if (drinkIngredient[i].peek() == drinkIngredientName)
+                {
+                    for (int j = 0; j < maxIngredientQuantity; j++)
+                    {
+                        drinkIngredient[i].push(drinkIngredientName);
+                    }
+                }
+            }
+        }
+
+        // Metodo para comprar ingredientes de postre
+        void buyDessertIngredient(const string &dessertIngredientName)
+        {
+            for (int i = 0; i < dessertIngredient.size(); i++)
+            {
+                if (dessertIngredient[i].peek() == dessertIngredientName)
+                {
+                    for (int j = 0; j < maxIngredientQuantity; j++)
+                    {
+                        dessertIngredient[i].push(dessertIngredientName);
+                    }
+                }
+            }
+        }
 };

@@ -1,5 +1,4 @@
 #include <iostream>
-#include "simulation.h"
 
 // Aqui se procesa la informacion de la simulacion y se guarda en un JSON para poder reejecutar la simulacion en un futuro
 
