@@ -4,7 +4,6 @@
 #include "order.h"
 
 using namespace std;
-
 class menu
 {
     private:
@@ -67,6 +66,7 @@ private:
     bool available;
     int velocidadParaAtender;
     int velocidadParaRetirar;
+    queue<int> windowQueue; // Cola de personas va tener el ID de la persona
     
 public:
     // Constructor con parametros
@@ -74,9 +74,10 @@ public:
     ~Window();
 
     // Metodo para pasar el cliente a la ventana
-    void passClient()
+    void passClient(queue<int> clientQueue)
     {
         // Aqui se pasa el cliente a la ventana
+        windowQueue.push(clientQueue.front());
     }
 
     // Metodo para atender al cliente
@@ -107,6 +108,10 @@ public:
     {
         // Aqui se entrega la orden cuando este lista y pagada
         order.deliver();
+
+        windowQueue.pop();
+        
+        return order;
 
     }
 };

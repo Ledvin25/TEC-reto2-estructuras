@@ -5,6 +5,9 @@
 #include <string>
 #include <map>
 #include "order.h"
+#include "inventory.h"
+#include "window.h"
+#include "saver.h"
 
 using namespace std;
 
@@ -12,14 +15,15 @@ class Simulation {
 public:
 
     private:
-    // Cola de pedidos
-    queue<Order> orders;
+    queue<Order> orders; // Cola de pedidos
+    queue<int> ClientQueue; // Cola de personas va tener el ID de la persona
+    Saver saver; // Objeto para guardar la informacion de la simulacion
+    Inventory inventory; // Objeto para manejar el inventario
+    
+    
+    public:
 
-    // Inventario de ingredientes
-    map<string, int> inventory;
-
-    // Cola de personas
-    queue<string> queue;
+    // Funciones base para la simulacion
 
     // Constructor
     Simulation() {
@@ -41,14 +45,29 @@ public:
     // Reinicia la simulación
     void restart() {
         cout << "Reiniciando la simulación." << endl;
-        // Lógica para reiniciar la simulación
+        // Lógica para reiniciar la simulación y limpiar los datos
     }
 
     // Actualiza la simulación
     void update() {
         cout << "Actualizando la simulación." << endl;
-        // Lógica para actualizar la simulación
+        // Lógica para actualizar la simulación con los datos extraidos del saver.load()
     }
 
+    // Crear la cantidad de ventanas extraidas del JSON
+
+    // Funciones para la logisitca de la simulacion
+
+    // Funcion para agregar un cliente a la cola
+    void hacerCola(int id)
+    {
+        ClientQueue.push(id);
+    }
+
+    // Funcion para pasar el cliente a la ventana
+    void pasarCliente(Window window)
+    {
+        window.passClient(ClientQueue);
+    }
 
 };

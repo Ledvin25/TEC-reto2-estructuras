@@ -22,6 +22,7 @@ private:
     vector<Drink> drink;
     vector<Dessert> dessert;
     EstadoPedido status;
+    int idOrder;
 
 public:
 
@@ -29,6 +30,17 @@ public:
     Order() : status(SIN_PROCESAR) {}
 
     // Metodos para darle forma al pedido
+
+    // Set y get del id del pedido
+    void setIdOrder(int idOrder)
+    {
+        this->idOrder = idOrder;
+    }
+
+    int getIdOrder()
+    {
+        return idOrder;
+    }
 
     // Agregar Food
     void addFood(const Food &Food)
