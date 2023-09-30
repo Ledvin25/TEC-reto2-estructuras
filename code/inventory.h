@@ -1,82 +1,149 @@
-// Aqui se van a trabajar las pilas de comida, refresco y postre que se van preparando cuando los pedidos son aprobados
 
 #include <iostream>
 #include "stack.h"
-#include "foodmaker.h"
+#include "productMaker.h"
 
-// Pila de comida
-class FoodStack
+using namespace std;
+
+// El objeto inventory va a ser como tal un vector de stacks, donde cada stack va a poder tener cualquier tipo de comida, bebibda o postre
+class Inventory
 {
     private:
-        Stack<Comida> foodStack;
+        vector<Stack<Food>> food; // Vector de stacks de comida
+        vector<Stack<Drink>> drink; // Vector de stacks de bebida
+        vector<Stack<Dessert>> dessert; // Vector de stacks de postre
+
     public:
-        FoodStack(){}
-        void push(Comida comida)
-        {
-            foodStack.push(comida);
-        }
-        Comida pop()
-        {
-            return foodStack.pop();
-        }
-        Comida peek()
-        {
-            return foodStack.peek();
-        }
-        bool isEmpty()
-        {
-            return foodStack.isEmpty();
-        }
-};
 
-// Pila de refresco
+        // Constructor por defecto
+        Inventory() {}
 
-class DrinkStack
-{
-    private:
-        Stack<Refresco> drinkStack;
-    public:
-        DrinkStack(){}
-        void push(Refresco refresco)
+        // Metodo para agregar una pila de comida con el nombre de la comida
+        void addFood(const string& name, const Stack<Food>& stack)
         {
-            drinkStack.push(refresco);
+            food.push_back(stack);
         }
-        Refresco pop()
-        {
-            return drinkStack.pop();
-        }
-        Refresco peek()
-        {
-            return drinkStack.peek();
-        }
-        bool isEmpty()
-        {
-            return drinkStack.isEmpty();
-        }
-};
 
-// Pila de postre
+        // Metodo para agregar una pila de bebida con el nombre de la bebida
+        void addDrink(const string& name, const Stack<Drink>& stack)
+        {
+            drink.push_back(stack);
+        }
 
-class DessertStack
-{
-    private:
-        Stack<Postre> dessertStack;
-    public:
-        DessertStack(){}
-        void push(Postre postre)
+        // Metodo para agregar una pila de postre con el nombre del postre
+        void addDessert(const string& name, const Stack<Dessert>& stack)
         {
-            dessertStack.push(postre);
+            dessert.push_back(stack);
         }
-        Postre pop()
+
+        // Metodo para comprobar si hay comida en el inventario
+        bool hasFood(const string& name)
         {
-            return dessertStack.pop();
+            for (int i = 0; i < food.size(); i++)
+            {
+                if (food[i].peek().getName() == name)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        Postre peek()
+
+        // Metodo para comprobar si hay bebida en el inventario
+        bool hasDrink(const string& name)
         {
-            return dessertStack.peek();
+            for (int i = 0; i < drink.size(); i++)
+            {
+                if (drink[i].peek().getName() == name)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        bool isEmpty()
+
+        // Metodo para comprobar si hay postre en el inventario
+        bool hasDessert(const string& name)
         {
-            return dessertStack.isEmpty();
+            for (int i = 0; i < dessert.size(); i++)
+            {
+                if (dessert[i].peek().getName() == name)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Metodo para sacar comida del inventario
+        Food getFood(const string& name)
+        {
+            for (int i = 0; i < food.size(); i++)
+            {
+                if (food[i].peek().getName() == name)
+                {
+                    return food[i].pop();
+                }
+            }
+        }
+
+        // Metodo para sacar bebida del inventario
+        Drink getDrink(const string& name)
+        {
+            for (int i = 0; i < drink.size(); i++)
+            {
+                if (drink[i].peek().getName() == name)
+                {
+                    return drink[i].pop();
+                }
+            }
+        }
+
+        // Metodo para sacar postre del inventario
+        Dessert getDessert(const string& name)
+        {
+            for (int i = 0; i < dessert.size(); i++)
+            {
+                if (dessert[i].peek().getName() == name)
+                {
+                    return dessert[i].pop();
+                }
+            }
+        }
+        
+        // Metodo para agregar comida al inventario
+        void addFood(const string& name, const Food& food)
+        {
+            for (int i = 0; i < this->food.size(); i++)
+            {
+                if (this->food[i].peek().getName() == name)
+                {
+                    this->food[i].push(food);
+                }
+            }
+        }
+
+        // Metodo para agregar bebida al inventario
+        void addDrink(const string& name, const Drink& drink)
+        {
+            for (int i = 0; i < this->drink.size(); i++)
+            {
+                if (this->drink[i].peek().getName() == name)
+                {
+                    this->drink[i].push(drink);
+                }
+            }
+        }
+
+        // Metodo para agregar postre al inventario
+        void addDessert(const string& name, const Dessert& dessert)
+        {
+            for (int i = 0; i < this->dessert.size(); i++)
+            {
+                if (this->dessert[i].peek().getName() == name)
+                {
+                    this->dessert[i].push(dessert);
+                }
+            }
         }
 };
