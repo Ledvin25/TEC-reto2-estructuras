@@ -5,44 +5,102 @@
 
 using namespace std;
 
-// Clase Order que puede contener Comida, Refresco y Postre
+// Estados del pedido
+enum EstadoPedido {
+    SIN_PROCESAR,
+    PROCESADO, 
+    PREPARADO,
+    SIN_PAGAR,
+    PAGADO,
+};
+
+// Clase Order que puede contener Food, Drink y Dessert
 class Order
 {
 private:
-    vector<Comida> comidas;
-    vector<Refresco> refrescos;
-    vector<Postre> postres;
+    vector<Food> food;
+    vector<Drink> drink;
+    vector<Dessert> dessert;
+    EstadoPedido status;
 
 public:
-    void agregarComida(const Comida &comida)
+
+    // Constructor por defecto
+    Order() : status(SIN_PROCESAR) {}
+
+    // Metodos para darle forma al pedido
+
+    // Agregar Food
+    void addFood(const Food &Food)
     {
-        comidas.push_back(comida);
+        food.push_back(Food);
     }
 
-    void agregarRefresco(const Refresco &refresco)
+    // Agregar Drink
+    void addDrink(const Drink &Drink)
     {
-        refrescos.push_back(refresco);
+        drink.push_back(Drink);
     }
 
-    void agregarPostre(const Postre &postre)
+    // Agregar Dessert
+    void addDessert(const Dessert &Dessert)
     {
-        postres.push_back(postre);
+        dessert.push_back(Dessert);
     }
 
-    vector<Comida> obtenerComidas()
+    // Obtener las comidas
+    vector<Food> getFood()
     {
-        return comidas;
+        return food;
     }
 
-    vector<Refresco> obtenerRefrescos()
+    // Obtener las bebidas
+    vector<Drink> obtenerdrink()
     {
-        return refrescos;
+        return drink;
     }
 
-    vector<Postre> obtenerPostres()
+    // Obtener los postres
+    vector<Dessert> obtenerdessert()
     {
-        return postres;
+        return dessert;
     }
+
+    // Las siguientes funciones van a cumplir lo que les corresponde, por ahora solo cambian el estado para dar la idea
+
+    // Procesar pedido
+    void process()
+    {
+        status = PROCESADO;
+    }
+
+    // Preparar pedido
+    void prepare()
+    {
+        status = PREPARADO;
+    }
+
+    // Listo para pagar
+
+    void readyToPay()
+    {
+        status = SIN_PAGAR;
+    }
+
+    // Pagar pedido
+
+    void pay()
+    {
+        status = PAGADO;
+    }
+
+    // Obtener el estado del pedido
+    EstadoPedido getStatus()
+    {
+        return status;
+    }
+
+
 };
 
 // Clase que mantiene una cola de objetos Order
