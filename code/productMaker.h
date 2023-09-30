@@ -4,27 +4,19 @@
 
 using namespace std;
 
-class Food
+class Producto
 {
-private:
+protected:
     string name;
     vector<string> ingredients;
 
 public:
-    Food() {}
-
-    // Setters
-    void setName(string name)
+    Producto(string name, vector<string> ingredients)
     {
         this->name = name;
-    }
-
-    void setIngredients(const vector<string>& ingredients)
-    {
         this->ingredients = ingredients;
     }
 
-    // Getters
     string getName()
     {
         return this->name;
@@ -36,66 +28,20 @@ public:
     }
 };
 
-class Drink
+class Food : public Producto
 {
-private:
-    string name;
-    vector<string> ingredients;
-
 public:
-    Drink() {}
-
-    // Setters
-    void setName(string name)
-    {
-        this->name = name;
-    }
-
-    void setIngredients(const vector<string>& ingredients)
-    {
-        this->ingredients = ingredients;
-    }
-
-    // Getters
-    string getName()
-    {
-        return this->name;
-    }
-
-    const vector<string>& getIngredients()
-    {
-        return this->ingredients;
-    }
+    Food(string name, vector<string> ingredients) : Producto(name, ingredients) {}
 };
 
-class Dessert
+class Drink : public Producto
 {
-private:
-    string name;
-    vector<string> ingredients;
-
 public:
-    Dessert() {}
+    Drink(string name, vector<string> ingredients) : Producto(name, ingredients) {}
+};
 
-    // Setters
-    void setName(string name)
-    {
-        this->name = name;
-    }
-
-    void setIngredients(const vector<string>& ingredients)
-    {
-        this->ingredients = ingredients;
-    }
-
-    // Getters
-    string getName()
-    {
-        return this->name;
-    }
-
-    const vector<string>& getIngredients()
-    {
-        return this->ingredients;
-    }
+class Dessert : public Producto
+{
+public:
+    Dessert(string name, vector<string> ingredients) : Producto(name, ingredients) {}
 };

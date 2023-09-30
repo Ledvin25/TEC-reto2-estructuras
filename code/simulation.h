@@ -19,7 +19,12 @@ public:
     queue<int> ClientQueue; // Cola de personas va tener el ID de la persona
     Saver saver; // Objeto para guardar la informacion de la simulacion
     Inventory inventory; // Objeto para manejar el inventario
-    
+
+    // Datos del JSON
+    int velocidadDeLlegada;
+    int ventanasParaPedido;
+    int ventanasParaRetirar;
+    int tiempoSimulacionHora;
     
     public:
 
@@ -49,12 +54,28 @@ public:
     }
 
     // Actualiza la simulación
-    void update() {
+    void load() {
         cout << "Actualizando la simulación." << endl;
+        
         // Lógica para actualizar la simulación con los datos extraidos del saver.load()
+
+        saver.load();
+    }
+
+    // Guarda la simulación
+
+    void save() {
+        cout << "Guardando la simulación." << endl;
+        // Lógica para guardar la simulación en un archivo JSON
+        saver.save();
     }
 
     // Crear la cantidad de ventanas extraidas del JSON
+
+    void createWindows(int ventanasParaPedido, int ventanasParaRetirar)
+    {
+        // Aqui se crean las ventanas
+    }
 
     // Funciones para la logisitca de la simulacion
 
@@ -64,10 +85,46 @@ public:
         ClientQueue.push(id);
     }
 
-    // Funcion para pasar el cliente a la ventana
+    // Funcion para pasar el cliente a la ventana con menos cola
     void pasarCliente(Window window)
     {
         window.passClient(ClientQueue);
+    }
+
+    // Funcion para atender al cliente
+
+    void atenderCliente(OrderWindow orderWindow)
+    {
+        orderWindow.attendClient();
+    }
+
+    // Preparacion del pedido
+
+    void prepararPedido(Order order)
+    {
+        order.prepare();
+    }
+
+    // Pagar el pedido
+
+    void pagarPedido(DeliveryWindow deliveryWindow)
+    {
+        // Se hace match del ID del cliente con el ID del pedido
+        // Se paga el pedido
+    }
+
+    // Retirar el pedido
+
+    void retirarPedido(DeliveryWindow deliveryWindow)
+    {
+        // Se hace match del ID del cliente con el ID del pedido
+        // Se retira el pedido
+    }
+
+    // Funcion para sacar el cliente de la ventana
+    void sacarCliente(Window window)
+    {
+        window.removeClient();
     }
 
 };

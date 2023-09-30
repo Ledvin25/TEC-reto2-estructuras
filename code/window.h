@@ -4,7 +4,7 @@
 #include "order.h"
 
 using namespace std;
-class menu
+class Menu
 {
     private:
     // Vector que va a ser un menu de todas las comidas, bebidas y postres y cada una va a necesitar un setter y un getter
@@ -15,7 +15,7 @@ class menu
     public:
 
     // Constructor por defecto
-    menu() {}
+    Menu() {}
 
     // Metodos para darle forma al menu
 
@@ -61,57 +61,130 @@ class menu
 
 class Window
 {
-private:
-
-    bool available;
-    int velocidadParaAtender;
-    int velocidadParaRetirar;
-    queue<int> windowQueue; // Cola de personas va tener el ID de la persona
+    protected:
     
-public:
-    // Constructor con parametros
-    Window(bool available = true, int velocidadParaAtender, int velocidadParaRetirar) : available(available), velocidadParaAtender(velocidadParaAtender), velocidadParaRetirar(velocidadParaRetirar) {}
-    ~Window();
-
-    // Metodo para pasar el cliente a la ventana
-    void passClient(queue<int> clientQueue)
-    {
-        // Aqui se pasa el cliente a la ventana
-        windowQueue.push(clientQueue.front());
-    }
-
-    // Metodo para atender al cliente
-    Order attendClient()
-    {
-        // Aqui se atiende al cliente y se toma la orden
-
-        Order order = Order();
-
-        // Logica para tomar la orden
-
-        order.process();
-
-        return order;
-    }
-
-    // Metodo para pagar la orden
-    Order payOrder(Order order)
-    {
-        // Aqui se paga la orden
-        order.pay();
-
-        return order;
-    }
-
-    // Metodo para entregar la orden
-    Order deliverOrder(Order order)
-    {
-        // Aqui se entrega la orden cuando este lista y pagada
-        order.deliver();
-
-        windowQueue.pop();
+        bool available;
+        int cantMaximaporVentana;
+        int velocidadDeVentana;
+        Menu menu;
+        queue<int> windowQueue; // Cola de personas va tener el ID de la persona
         
-        return order;
+    public:
+        // Constructor con parametros
+        Window();
+        ~Window();
 
-    }
+        // setters y getters
+
+        void setAvailable(bool available)
+        {
+            this->available = available;
+        }
+
+        bool getAvailable()
+        {
+            return available;
+        }
+
+        void setCantMaximaporVentana(int cantMaximaporVentana)
+        {
+            this->cantMaximaporVentana = cantMaximaporVentana;
+        }
+
+        int getCantMaximaporVentana()
+        {
+            return cantMaximaporVentana;
+        }
+
+        void setVelocidadDeVentana(int velocidadDeVentana)
+        {
+            this->velocidadDeVentana = velocidadDeVentana;
+        }
+
+        int getVelocidadDeVentana()
+        {
+            return velocidadDeVentana;
+        }
+    
+        // Metodo para pasar el cliente a la ventana
+        void passClient(queue<int> clientQueue)
+        {
+            // comprobar si en la cola no hay mas de cantMaximaporVentana
+            if (windowQueue.size() < cantMaximaporVentana)
+            {
+                // Aqui se pasa el cliente a la ventana 
+                windowQueue.push(clientQueue.front());
+            }
+        }
+
+        // Metodo para sacar el cliente de la ventana
+
+        void removeClient()
+        {
+            // Aqui se saca el cliente de la ventana
+            windowQueue.pop();
+        }
+};
+
+class OrderWindow: public Window
+{
+    public :
+        OrderWindow();
+        ~OrderWindow();
+
+        // Metodo para atender al cliente
+        Order attendClient()
+        {
+            // Aqui se atiende al cliente y se selecciona del menu
+
+            // Logica para seleccionar el producto
+
+            int i = 0;
+            
+            Order order;
+
+            Food food(menu.getFood()[i], {"Ingredientes"});
+            Drink drink(menu.getDrink()[i], {"Ingredientes"});
+            Dessert dessert(menu.getDessert()[i], {"Ingredientes"});
+
+            order.addFood(food);
+            order.addDrink(drink);
+            order.addDessert(dessert);
+    
+            // Logica para tomar la orden
+    
+            order.process();
+    
+            return order;
+        }
+};
+
+class DeliveryWindow: public Window
+{
+    public :
+
+        DeliveryWindow();
+        ~DeliveryWindow();
+
+        // Metodo para pagar la orden y comprobar el id de la orden y del cliente
+        Order payOrder(Order order)
+        {
+            // Aqui se paga la orden
+            order.pay();
+    
+            return order;
+        }
+
+        // Metodo para entregar la orden
+        Order deliverOrder(Order order)
+        {
+            // Aqui se entrega la orden cuando este lista y pagada y comprobar el id de la orden y del cliente
+            order.deliver();
+    
+            windowQueue.pop();
+            
+            return order;
+    
+        }
+
 };
