@@ -1,149 +1,151 @@
-
 #include <iostream>
 #include "stack.h"
-#include "productMaker.h"
+#include <vector>
+#include <string>
+
 
 using namespace std;
 
-// El objeto inventory va a ser como tal un vector de stacks, donde cada stack va a poder tener cualquier tipo de comida, bebibda o postre
+// El objeto inventory va a ser como tal un vector de stacks, donde cada stack va a tener un dato de tipo string que sera el ingrediente de una comida, bebida o postre
 class Inventory
 {
     private:
-        vector<Stack<Food>> food; // Vector de stacks de comida
-        vector<Stack<Drink>> drink; // Vector de stacks de bebida
-        vector<Stack<Dessert>> dessert; // Vector de stacks de postre
+        vector<Stack<string>> foodIngredient; // Vector de stacks de productos'
+        vector<Stack<string>> drinkIngredient; // Vector de stacks de productos'
+        vector<Stack<string>> dessertIngredient; // Vector de stacks de productos'
 
     public:
 
         // Constructor por defecto
         Inventory() {}
 
-        // Metodo para agregar una pila de comida con el nombre de la comida
-        void addFood(const string& name, const Stack<Food>& stack)
+        // Metodo para agregar una pila de ingredientes de comida
+        void addFoodIngredient(const Stack<string> &foodIngredient)
         {
-            food.push_back(stack);
+            this->foodIngredient.push_back(foodIngredient);
         }
 
-        // Metodo para agregar una pila de bebida con el nombre de la bebida
-        void addDrink(const string& name, const Stack<Drink>& stack)
+        // Metodo para agregar una pila de ingredientes de bebida
+        void addDrinkIngredient(const Stack<string> &drinkIngredient)
         {
-            drink.push_back(stack);
+            this->drinkIngredient.push_back(drinkIngredient);
         }
 
-        // Metodo para agregar una pila de postre con el nombre del postre
-        void addDessert(const string& name, const Stack<Dessert>& stack)
+        // Metodo para agregar una pila de ingredientes de postre
+        void addDessertIngredient(const Stack<string> &dessertIngredient)
         {
-            dessert.push_back(stack);
+            this->dessertIngredient.push_back(dessertIngredient);
         }
 
-        // Metodo para comprobar si hay comida en el inventario
-        bool hasFood(const string& name)
+        // Metodo para agregar un ingrediente a la pila de ingredientes de comida por nombre que es un string
+        void addFoodIngredientByName(const string &foodIngredientName)
         {
-            for (int i = 0; i < food.size(); i++)
+            for (int i = 0; i < foodIngredient.size(); i++)
             {
-                if (food[i].peek().getName() == name)
+                if (foodIngredient[i].peek() == foodIngredientName)
                 {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Metodo para comprobar si hay bebida en el inventario
-        bool hasDrink(const string& name)
-        {
-            for (int i = 0; i < drink.size(); i++)
-            {
-                if (drink[i].peek().getName() == name)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Metodo para comprobar si hay postre en el inventario
-        bool hasDessert(const string& name)
-        {
-            for (int i = 0; i < dessert.size(); i++)
-            {
-                if (dessert[i].peek().getName() == name)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // Metodo para sacar comida del inventario
-        Food getFood(const string& name)
-        {
-            for (int i = 0; i < food.size(); i++)
-            {
-                if (food[i].peek().getName() == name)
-                {
-                    return food[i].pop();
+                    foodIngredient[i].push(foodIngredientName);
                 }
             }
         }
 
-        // Metodo para sacar bebida del inventario
-        Drink getDrink(const string& name)
+        // Metodo para agregar un ingrediente a la pila de ingredientes de bebida por nombre que es un string
+        void addDrinkIngredientByName(const string &drinkIngredientName)
         {
-            for (int i = 0; i < drink.size(); i++)
+            for (int i = 0; i < drinkIngredient.size(); i++)
             {
-                if (drink[i].peek().getName() == name)
+                if (drinkIngredient[i].peek() == drinkIngredientName)
                 {
-                    return drink[i].pop();
+                    drinkIngredient[i].push(drinkIngredientName);
                 }
             }
         }
 
-        // Metodo para sacar postre del inventario
-        Dessert getDessert(const string& name)
+        // Metodo para agregar un ingrediente a la pila de ingredientes de postre por nombre que es un string
+        void addDessertIngredientByName(const string &dessertIngredientName)
         {
-            for (int i = 0; i < dessert.size(); i++)
+            for (int i = 0; i < dessertIngredient.size(); i++)
             {
-                if (dessert[i].peek().getName() == name)
+                if (dessertIngredient[i].peek() == dessertIngredientName)
                 {
-                    return dessert[i].pop();
+                    dessertIngredient[i].push(dessertIngredientName);
                 }
             }
         }
+
+        // Metodo para sacar un ingredientes de la pila de ingredientes de comida por nombre que es un string
+        void removeFoodIngredientByName(const string &foodIngredientName)
+        {
+            for (int i = 0; i < foodIngredient.size(); i++)
+            {
+                if (foodIngredient[i].peek() == foodIngredientName)
+                {
+                    foodIngredient[i].pop();
+                }
+            }
+        }
+
+        // Metodo para sacar un ingredientes de la pila de ingredientes de bebida por nombre que es un string
+        void removeDrinkIngredientByName(const string &drinkIngredientName)
+        {
+            for (int i = 0; i < drinkIngredient.size(); i++)
+            {
+                if (drinkIngredient[i].peek() == drinkIngredientName)
+                {
+                    drinkIngredient[i].pop();
+                }
+            }
+        }
+
+        // Metodo para sacar un ingredientes de la pila de ingredientes de postre por nombre que es un string
+        void removeDessertIngredientByName(const string &dessertIngredientName)
+        {
+            for (int i = 0; i < dessertIngredient.size(); i++)
+            {
+                if (dessertIngredient[i].peek() == dessertIngredientName)
+                {
+                    dessertIngredient[i].pop();
+                }
+            }
+        }
+
+        // Metodo para comprobar si la pila de ingredientes de comida esta vacia por nombre que es un string
+        bool isFoodIngredientEmptyByName(const string &foodIngredientName)
+        {
+            for (int i = 0; i < foodIngredient.size(); i++)
+            {
+                if (foodIngredient[i].peek() == foodIngredientName)
+                {
+                    return foodIngredient[i].isEmpty();
+                }
+            }
+        }
+
+        // Metodo para comprobar si la pila de ingredientes de bebida esta vacia por nombre que es un string
+        bool isDrinkIngredientEmptyByName(const string &drinkIngredientName)
+        {
+            for (int i = 0; i < drinkIngredient.size(); i++)
+            {
+                if (drinkIngredient[i].peek() == drinkIngredientName)
+                {
+                    return drinkIngredient[i].isEmpty();
+                }
+            }
+        }
+
+        // Metodo para comprobar si la pila de ingredientes de postre esta vacia por nombre que es un string
+        bool isDessertIngredientEmptyByName(const string &dessertIngredientName)
+        {
+            for (int i = 0; i < dessertIngredient.size(); i++)
+            {
+                if (dessertIngredient[i].peek() == dessertIngredientName)
+                {
+                    return dessertIngredient[i].isEmpty();
+                }
+            }
+        }
+
         
-        // Metodo para agregar comida al inventario
-        void addFood(const string& name, const Food& food)
-        {
-            for (int i = 0; i < this->food.size(); i++)
-            {
-                if (this->food[i].peek().getName() == name)
-                {
-                    this->food[i].push(food);
-                }
-            }
-        }
-
-        // Metodo para agregar bebida al inventario
-        void addDrink(const string& name, const Drink& drink)
-        {
-            for (int i = 0; i < this->drink.size(); i++)
-            {
-                if (this->drink[i].peek().getName() == name)
-                {
-                    this->drink[i].push(drink);
-                }
-            }
-        }
-
-        // Metodo para agregar postre al inventario
-        void addDessert(const string& name, const Dessert& dessert)
-        {
-            for (int i = 0; i < this->dessert.size(); i++)
-            {
-                if (this->dessert[i].peek().getName() == name)
-                {
-                    this->dessert[i].push(dessert);
-                }
-            }
-        }
+        
+        
 };
