@@ -1,18 +1,16 @@
-#ifndef RESTAURANTE_H
-#define RESTAURANTE_H
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <nlohmann/json.hpp>
 #include "config.h"
-
+#include "json.hpp"
+using namespace std;
 using json = nlohmann::json;
 
 class JSON {
 private:
-    Setting configuracionSimulador;
+     Setting configuracionSimulador;
     unordered_map<string, unordered_map<string, vector<string>>> menu;
     unordered_map<string, vector<string>> inventario;
 
