@@ -10,9 +10,17 @@ using json = nlohmann::json;
 
 class JSON {
 private:
-     Setting configuracionSimulador;
-    unordered_map<string, unordered_map<string, vector<string>>> menu;
-    unordered_map<string, vector<string>> inventario;
+    Setting configuracionSimulador;
+    
+    json comidas;
+    json refrescos;
+    json postres;
+
+    // Accede a los elementos de inventario
+    
+    json pila_comidas;
+    json pila_refrescos;
+    json pila_postres;
 
 public:
     JSON(const json& json_data) {
@@ -26,42 +34,47 @@ public:
         configuracionSimulador.velocidadParaRetirar = json_data["velocidadParaRetirar"];
         configuracionSimulador.cantMaximaPorVentana = json_data["cantMaximaporVentana"];
         configuracionSimulador.cantidadMaxIngrediente = json_data["cantidadMaxIngrediente"];
-        menu = json_data["menu"];
-        inventario = json_data["inventario"];
+        
+        // Accede a los elementos del menú
+        
+        comidas = json_data["menu"]["comidas"];
+        refrescos = json_data["menu"]["refrescos"];
+        postres = json_data["menu"]["postres"];
+
+        // Accede a los elementos de inventario
+        
+        pila_comidas = json_data["inventario"]["pila_comidas"];
+        pila_refrescos = json_data["inventario"]["pila_refrescos"];
+        pila_postres = json_data["inventario"]["pila_postres"];
     }
 
     // Métodos para acceder a la información del menú
-    unordered_map<string, vector<string>> obtenerMenuComidas() const {
-        return menu["comidas"];
+    json getMenuComidas() const {
+        return comidas;
     }
 
-    unordered_map<string, vector<string>> obtenerMenuRefrescos() const {
-        return menu["refrescos"];
+    json getMenuRefrescos() const {
+        return refrescos ;
     }
 
-    unordered_map<string, vector<string>> obtenerMenuPostres() const {
-        return menu["postres"];
+    json getMenuPostres() const {
+        return postres;
     }
 
-    // Métodos para acceder al inventario
-    unordered_map<string, vector<string>> obtenerInventario() const {
-        return inventario;
+    json getPilaComidas()  const {
+        return pila_comidas;
     }
 
-    vector<string> obtenerPilaComidas() const {
-        return inventario["pila_comidas"];
+    json getPilaRefrescos() const {
+        return pila_refrescos;
     }
 
-    vector<string> obtenerPilaRefrescos() const {
-        return inventario["pila_refrescos"];
-    }
-
-    vector<string> obtenerPilaPostres() const {
-        return inventario["pila_postres"];
+    json getPilaPostres() const {
+        return pila_postres;
     }
 
     // Métodos para acceder a la configuración del simulador
-    Settings obtenerConfiguracionSimulador() const {
+    Setting getConfiguracionSimulador() const {
         return configuracionSimulador;
     }
 };

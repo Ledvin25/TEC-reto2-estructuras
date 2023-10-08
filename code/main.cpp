@@ -1,36 +1,71 @@
 #include <iostream>
 #include <fstream>
-
 #include "json.hpp"
+#include <unordered_map>
+#include <vector>
+#include "simulation.h"
 using json = nlohmann::json;
+using namespace std;
 
 int main() {
-    // Leer el archivo JSON
-    std::ifstream archivo_json("config.json");
-    json datos;
-    archivo_json >> datos;
+    // Lee el archivo JSON en un objeto json
+    ifstream file("conf.json");
+    if (!file.is_open()) {
+        cout << "Error al abrir el archivo." << endl;
+        return 1;
+    }
 
-    // Acceder a los valores del JSON
-    int tiempoSimulacionHora = datos["tiempoSimulacionHora"];
-    int minHora = datos["minHora"];
-    int maxHora = datos["maxHora"];
-    int velocidadDeLlegada = datos["velocidadDeLlegada"];
-    int ventanasParaPedido = datos["ventanasParaPedido"];
-    int velocidadParaAtender = datos["velocidadParaAtender"];
-    int ventanasParaRetirar = datos["ventanasParaRetirar"];
-    int velocidadParaRetirar = datos["velocidadParaRetirar"];
-    int cantMaximaporVentana = datos["cantMaximaporVentana"];
-    int cantidadMaxIngrediente = datos["cantidadMaxIngrediente"];
+    json config;
+    try {
+        file >> config;
+    } catch (json::parse_error& e) {
+        cout << "Error de parseo JSON: " << e.what() << endl;
+        return 1;
+    }
+    JSON datos(config);
+    
+   
+   
+    // Crea un unordered_map para almacenar las comidas y sus ingredientes
+    unordered_map<string, vector<string>> todasLasComidas;
+    json comidas1 = datos.getMenuComidas();
+    // Itera a través de las comidas y sus ingredientes
+    for (json::iterator it = comidas1.begin(); it != comidas1.end(); ++it) {
+        string nombreComida = it.key();
+        cout << "Nombre de la comida: " << nombreComida << endl;
+        vector<string> ingredientes = it.value();
+        for (string ingrediente:ingredientes){
+            cout << " - " << ingrediente << endl;
+        }
+        
+       
+    }
+    json pila_comidas = datos.getPilaComidas();
+    json pila_refrescos = datos.getPilaRefrescos();
+    json pila_postres = datos.getPilaPostres();
 
-    // Acceder a elementos anidados
-    std::string hamburguesa_ingrediente1 = datos["menu"]["comidas"]["hamburguesa"][0];
-    std::string hotdog_ingrediente2 = datos["menu"]["comidas"]["hotdog"][1];
+    // Convierte los elementos de las pilas en vectores de strings
+    vector<string> comidas = pila_comidas;
+    vector<string> refrescos = pila_refrescos;
+    vector<string> postres = pila_postres;
 
-    // Imprimir los valores
-    std::cout << "tiempoSimulacionHora: " << tiempoSimulacionHora << std::endl;
-    std::cout << "minHora: " << minHora << std::endl;
-    std::cout << "maxHora: " << maxHora << std::endl;
-    // Continuar imprimiendo otros valores y elementos anidados
+    // Imprime los elementos de cada pila
+    cout << "Pila de Comidas:" << endl;
+    for (const string& comida : comidas) {
+        cout << " - " << comida << endl;
+    }
+
+    cout << "Pila de Refrescos:" << endl;
+    for (const string& refresco : refrescos) {
+        cout << " - " << refresco << endl;
+    }
+
+    cout << "Pila de Postres:" << endl;
+    for (const string& postre : postres) {
+        cout << " - " << postre << endl;
+    }
+
+    
 
     return 0;
 }

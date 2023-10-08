@@ -32,16 +32,19 @@ class Food : public Producto
 {
 public:
     Food(string name, vector<string> ingredients) : Producto(name, ingredients) {}
+    
 };
 
 class Drink : public Producto
 {
 public:
     Drink(string name, vector<string> ingredients) : Producto(name, ingredients) {}
+   
 };
 
 class Dessert : public Producto
 {
 public:
     Dessert(string name, vector<string> ingredients) : Producto(name, ingredients) {}
+    
 };

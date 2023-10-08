@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include "productMaker.h"
-
+#include <chrono>
 using namespace std;
 
 // Estados del pedido
@@ -23,6 +23,7 @@ private:
     vector<Dessert> dessert;
     EstadoPedido status;
     int idOrder;
+    chrono::system_clock::time_point tiempo; // fuuro atributo para fecha y hora
 
 public:
 

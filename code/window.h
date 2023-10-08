@@ -1,63 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "order.h"
-
+#include "menu.h"
+#include <ctime>
 using namespace std;
-class Menu
-{
-    private:
-    // Vector que va a ser un menu de todas las comidas, bebidas y postres y cada una va a necesitar un setter y un getter
-    vector<string> food;
-    vector<string> drink;
-    vector<string> dessert;
-
-    public:
-
-    // Constructor por defecto
-    Menu() {}
-
-    // Metodos para darle forma al menu
-
-    // Agregar Food
-    void addFood(const string &Food)
-    {
-        food.push_back(Food);
-    }
-
-    // Agregar Drin
-    void addDrink(const string &Drink)
-    {
-        drink.push_back(Drink);
-    }
-
-    // Agregar Dessert
-    void addDessert(const string &Dessert)
-    {
-        dessert.push_back(Dessert);
-    }
-    
-    // Obtener las comidas
-    vector<string> getFood()
-    {
-        return food;
-    }
-
-    // Obtener las bebidas
-
-    vector<string> getDrink()
-    {
-        return drink;
-    }
-
-    // Obtener los postres
-
-    vector<string> getDessert()
-    {
-        return dessert;
-    }
-    
-};
 
 class Window
 {
@@ -65,30 +11,24 @@ class Window
     
         bool available;
         int cantMaximaporVentana;
-        int velocidadDeVentana;
+        int velocidadDeVentanaP;
+        int velocidadDeVentanaD;
         Menu menu;
         queue<int> windowQueue; // Cola de personas va tener el ID de la persona
         
     public:
         // Constructor con parametros
-        Window();
-        ~Window();
-
-        // setters y getters
-
-        void setAvailable(bool available)
-        {
-            this->available = available;
-        }
+        Window(Menu menu, int MaxPeronas, int P, int D) {
+        this->menu = menu;
+        cantMaximaporVentana = MaxPeronas;
+        available = true;
+        velocidadDeVentanaP = P;
+        velocidadDeVentanaD = D;
+    }
 
         bool getAvailable()
         {
             return available;
-        }
-
-        void setCantMaximaporVentana(int cantMaximaporVentana)
-        {
-            this->cantMaximaporVentana = cantMaximaporVentana;
         }
 
         int getCantMaximaporVentana()
@@ -96,14 +36,14 @@ class Window
             return cantMaximaporVentana;
         }
 
-        void setVelocidadDeVentana(int velocidadDeVentana)
+        int getVelocidadDeVentanaP()
         {
-            this->velocidadDeVentana = velocidadDeVentana;
+            return velocidadDeVentanaP;
         }
 
-        int getVelocidadDeVentana()
+        int getVelocidadDeVentanaD()
         {
-            return velocidadDeVentana;
+            return velocidadDeVentanaD;
         }
     
         // Metodo para pasar el cliente a la ventana
@@ -133,26 +73,26 @@ class OrderWindow: public Window
         ~OrderWindow();
 
         // Metodo para atender al cliente
-        Order attendClient()
+        Order attendClient(int opcion)
         {
-            // Aqui se atiende al cliente y se selecciona del menu
+            Order order;
+            srand(static_cast<unsigned int>(time(nullptr))); // generar el numero random
+            if (opcion==1){ // si opciones 1, va a ser una comida y un refresco
+                // Generar un índice aleatorio dentro del rango del vector
+                int i = rand() % menu.getFood().size();
+                order.addFood(menu.getFood()[i]);
+                i = rand() % menu.getDrink().size();
+                order.addDrink(menu.getDrink()[i]);
+            }
 
             // Logica para seleccionar el producto
-
-            int i = 0;
+            if (opcion==2){ // si opciones 2, va a ser un postre
+                // Generar un índice aleatorio dentro del rango del vector
+                int i = rand() % menu.getDessert().size();
+                order.addDessert(menu.getDessert()[i]);
+                
+            }
             
-            Order order;
-
-            Food food(menu.getFood()[i], {"Ingredientes"});
-            Drink drink(menu.getDrink()[i], {"Ingredientes"});
-            Dessert dessert(menu.getDessert()[i], {"Ingredientes"});
-
-            order.addFood(food);
-            order.addDrink(drink);
-            order.addDessert(dessert);
-    
-            // Logica para tomar la orden
-    
             order.process();
     
             return order;
