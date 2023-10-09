@@ -65,6 +65,10 @@ int main() {
         cout << " - " << postre << endl;
     }
 
+    // Crear el menú
+
+    OrderCounter& orderCounter = OrderCounter::getInstance();
+
     
 
     return 0;

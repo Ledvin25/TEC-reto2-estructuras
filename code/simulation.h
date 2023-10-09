@@ -19,8 +19,7 @@ private:
     Menu menu;
     vector<OrderWindow> ventanasPedido;
     vector<DeliveryWindow> ventanasRetiro;
-    Window window;
-    
+    OrderCounter& orderCounter; 
     
     int velocidadDeLlegada;
     int cantMaxPeronas;
@@ -30,23 +29,27 @@ private:
     int maxHora;
     int velocidadParaAtender;
     int velocidadParaRetirar;
+    int ventanasParaPedido;
+    int ventanasParaRetirar;
 
 public:
     // Funciones base para la simulación
 
     // Constructor
-    Simulation(Setting valoresIniciales)
+    Simulation(Setting valoresIniciales, OrderCounter& orderCounter)
         : velocidadDeLlegada(valoresIniciales.velocidadDeLlegada),
-          tiempoSimulacionHora(valoresIniciales.simulationTime),
-          cantMaxPeronas(valoresIniciales.cantMaximaPorVentana),
-          cantMaxIngrediente(valoresIniciales.cantidadMaxIngrediente),
-          minHora(valoresIniciales.minHora),
-          maxHora(valoresIniciales.maxHora),
-          velocidadParaAtender(valoresIniciales.velocidadParaAtender),
-          velocidadParaRetirar(valoresIniciales.velocidadParaRetirar),
-          menu(),
-          inventory(),
-          window(menu, cantMaxPeronas, velocidadParaAtender, velocidadParaRetirar) {
+        tiempoSimulacionHora(valoresIniciales.simulationTime),
+        cantMaxPeronas(valoresIniciales.cantMaximaPorVentana),
+        cantMaxIngrediente(valoresIniciales.cantidadMaxIngrediente),
+        minHora(valoresIniciales.minHora),
+        maxHora(valoresIniciales.maxHora),
+        velocidadParaAtender(valoresIniciales.velocidadParaAtender),
+        velocidadParaRetirar(valoresIniciales.velocidadParaRetirar),
+        ventanasParaPedido(valoresIniciales.ventanasParaPedido),
+        ventanasParaRetirar(valoresIniciales.ventanasParaRetirar),
+        menu(),
+        inventory(inventory), 
+        orderCounter(orderCounter) {
     }
 
 
@@ -88,17 +91,16 @@ public:
 
     // Crear la cantidad de ventanas extraidas del JSON
 
-    void setWindows(int ventanasParaPedido, int ventanasParaRetirar)
+    void setWindows()
     {
         for (int i = 0; i < ventanasParaPedido; i++) {
-            OrderWindow venatanaPedido; // crear las ventanas que se indica en el json 
-            this->ventanasPedido.push_back(venatanaPedido); // guardarlas en un vector, se puede hacer diferente, no supe cómo 
-           
+            // Crear ventana con los parametros que se indica en el json
+            OrderWindow ventanaPedido(orderCounter, menu, velocidadParaAtender, cantMaxPeronas);
+            this->ventanasPedido.push_back(ventanaPedido);
         }
 
         for (int i = 0; i < ventanasParaRetirar; i++) {
-            DeliveryWindow ventanaRetiro; // crear las ventanas que se indica en el json 
-            
+            DeliveryWindow ventanaRetiro(velocidadParaRetirar, cantMaxPeronas); // crear las ventanas que se indica en el json 
             this->ventanasRetiro.push_back(ventanaRetiro);
         }
         
@@ -146,6 +148,7 @@ public:
         
 
         inventory.setMaxIngredientQuantity(cantMaxIngrediente);
+
         for (string elemento : ingredientes_comidas){
             Stack<string> pila_ingrediente; // crear pila de ingredientes de x tamaño segun indique json
             for (int i = 0; i<cantMaxIngrediente; ++i){
@@ -153,6 +156,7 @@ public:
             }
             inventory.addFoodIngredient(pila_ingrediente);
         }
+
         for (string elemento : ingredientes_refrescos){
             Stack<string> pila_ingrediente; // crear pila de ingredientes de x tamaño segun indique json
             for (int i = 0; i<cantMaxIngrediente; ++i){
@@ -160,6 +164,7 @@ public:
             }
             inventory.addFoodIngredient(pila_ingrediente); // agregar pila a inventario por cada elemento
         }
+        
         for (string elemento : ingredientes_postres){
             Stack<string> pila_ingrediente; // crear pila de ingredientes de x tamaño segun indique json
             for (int i = 0; i<cantMaxIngrediente; ++i){ 

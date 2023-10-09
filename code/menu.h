@@ -24,7 +24,7 @@ class Menu
         food.push_back(Food);
     }
 
-    // Agregar Drin
+    // Agregar Drink
     void addDrink(const Drink &Drink)
     {
         drink.push_back(Drink);

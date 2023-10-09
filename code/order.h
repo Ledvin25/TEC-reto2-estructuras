@@ -24,11 +24,16 @@ private:
     EstadoPedido status;
     int idOrder;
     chrono::system_clock::time_point tiempo; // fuuro atributo para fecha y hora
+    Inventory inventory;
 
 public:
 
-    // Constructor por defecto
-    Order() : status(SIN_PROCESAR) {}
+    // Constructor
+    Order(int idOrder)
+        : idOrder(idOrder), status(SIN_PROCESAR) {}
+
+    // Destructor
+    ~Order() {}
 
     // Metodos para darle forma al pedido
 
@@ -84,8 +89,8 @@ public:
     // Procesar pedido
     void process()
     {
-        status = PROCESADO;
         // Cuando se escoge del menu de la ventana, se agregan a la orden los nombres de los productos
+        status = PROCESADO;
     }
 
     // Preparar pedido
@@ -94,6 +99,25 @@ public:
         status = PREPARADO;
         // Se comprueba que los productos escogidos, tengan stock suficiente en inventario, en caso de ser si se utilizan los ingredientes
         // por lo tanto se restan de la pila correspondiente y la orden esta lista para continuar con el pago
+
+        // Iterar a traves de las comidas de la orden
+        for (int i = 0; i < food.size(); i++)
+        {
+            // Iterar a traves de los ingredientes de la comida
+            for (int j = 0; j < food[i].getIngredients().size(); j++)
+            {
+                // Iterar a traves de los ingredientes del inventario
+                for (int k = 0; k < inventory.getIngredients().size(); k++)
+                {
+                    // Si el ingrediente de la comida es igual al ingrediente del inventario
+                    if (food[i].getIngredients()[j].getName() == inventory.getIngredients()[k].getName())
+                    {
+                        // Se resta la cantidad de ingredientes de la comida a la cantidad de ingredientes del inventario
+                        inventory.getIngredients()[k].setQuantity(inventory.getIngredients()[k].getQuantity() - food[i].getIngredients()[j].getQuantity());
+                    }
+                }
+            }
+        }
     }
 
     // Pagar pedido

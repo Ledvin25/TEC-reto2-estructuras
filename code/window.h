@@ -3,6 +3,8 @@
 #include <vector>
 #include "menu.h"
 #include <ctime>
+#include "orderCounter.h"
+
 using namespace std;
 
 class Window
@@ -11,20 +13,15 @@ class Window
     
         bool available;
         int cantMaximaporVentana;
-        int velocidadDeVentanaP;
-        int velocidadDeVentanaD;
-        Menu menu;
         queue<int> windowQueue; // Cola de personas va tener el ID de la persona
         
     public:
         // Constructor con parametros
-        Window(Menu menu, int MaxPeronas, int P, int D) {
-        this->menu = menu;
-        cantMaximaporVentana = MaxPeronas;
-        available = true;
-        velocidadDeVentanaP = P;
-        velocidadDeVentanaD = D;
-    }
+        Window(bool available, int cantMaximaporVentana)
+        {
+            this->available = true;
+            this->cantMaximaporVentana = cantMaximaporVentana;
+        }
 
         bool getAvailable()
         {
@@ -34,16 +31,6 @@ class Window
         int getCantMaximaporVentana()
         {
             return cantMaximaporVentana;
-        }
-
-        int getVelocidadDeVentanaP()
-        {
-            return velocidadDeVentanaP;
-        }
-
-        int getVelocidadDeVentanaD()
-        {
-            return velocidadDeVentanaD;
         }
     
         // Metodo para pasar el cliente a la ventana
@@ -68,14 +55,31 @@ class Window
 
 class OrderWindow: public Window
 {
+    private:
+        OrderCounter& orderCounter; // Referencia a OrderCounter
+        int velocidadDeVentanaP;
+        Menu menu;
+
     public :
-        OrderWindow();
+
+        OrderWindow(OrderCounter& orderCounter, Menu menu, int velocidadDeVentanaP, int cantMaximaporVentana)
+            : Window(true, cantMaximaporVentana), orderCounter(orderCounter), menu(menu), velocidadDeVentanaP(velocidadDeVentanaP) {}
         ~OrderWindow();
+
+        int getVelocidadDeVentana()
+        {
+            return velocidadDeVentanaP;
+        }
+
+        int getOrderCounter()
+        {
+            return orderCounter.getNextOrderID();
+        }
 
         // Metodo para atender al cliente
         Order attendClient(int opcion)
         {
-            Order order;
+            Order order(orderCounter.getNextOrderID()); // Crear orden con el ID de la orden
             srand(static_cast<unsigned int>(time(nullptr))); // generar el numero random
             if (opcion==1){ // si opciones 1, va a ser una comida y un refresco
                 // Generar un índice aleatorio dentro del rango del vector
@@ -101,10 +105,19 @@ class OrderWindow: public Window
 
 class DeliveryWindow: public Window
 {
+    private:
+        int velocidadDeVentanaD;
+    
     public :
 
-        DeliveryWindow();
+        DeliveryWindow(int velocidadDeVentanaD, int cantMaximaporVentana)
+            : Window(true, cantMaximaporVentana), velocidadDeVentanaD(velocidadDeVentanaD) {};
         ~DeliveryWindow();
+
+        int getVelocidadDeVentana()
+        {
+            return velocidadDeVentanaD;
+        }
 
         // Metodo para pagar la orden y comprobar el id de la orden y del cliente
         Order payOrder(Order order)
