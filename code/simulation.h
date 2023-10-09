@@ -13,13 +13,12 @@ using namespace std;
 class Simulation {
 private:
     queue<Order> orders; // Cola de pedidos
-    queue<int> ClientQueue; // Cola de personas va a tener el ID de la persona
+    queue<int> ClientQueue; // Cola de personas va a tener el ID de la
     Saver saver; // Objeto para guardar la información de la simulación
     Inventory inventory; // Objeto para manejar el inventario
     Menu menu;
     vector<OrderWindow> ventanasPedido;
     vector<DeliveryWindow> ventanasRetiro;
-    OrderCounter& orderCounter; 
     
     int velocidadDeLlegada;
     int cantMaxPeronas;
@@ -31,12 +30,13 @@ private:
     int velocidadParaRetirar;
     int ventanasParaPedido;
     int ventanasParaRetirar;
+    int OrderID = 0;
 
 public:
     // Funciones base para la simulación
 
     // Constructor
-    Simulation(Setting valoresIniciales, OrderCounter& orderCounter)
+    Simulation(Setting valoresIniciales)
         : velocidadDeLlegada(valoresIniciales.velocidadDeLlegada),
         tiempoSimulacionHora(valoresIniciales.simulationTime),
         cantMaxPeronas(valoresIniciales.cantMaximaPorVentana),
@@ -48,8 +48,7 @@ public:
         ventanasParaPedido(valoresIniciales.ventanasParaPedido),
         ventanasParaRetirar(valoresIniciales.ventanasParaRetirar),
         menu(),
-        inventory(inventory), 
-        orderCounter(orderCounter) {
+        inventory(inventory) {
     }
 
 
@@ -95,7 +94,7 @@ public:
     {
         for (int i = 0; i < ventanasParaPedido; i++) {
             // Crear ventana con los parametros que se indica en el json
-            OrderWindow ventanaPedido(orderCounter, menu, velocidadParaAtender, cantMaxPeronas);
+            OrderWindow ventanaPedido(menu, velocidadParaAtender, cantMaxPeronas);
             this->ventanasPedido.push_back(ventanaPedido);
         }
 
@@ -191,7 +190,8 @@ public:
 
     void atenderCliente(OrderWindow orderWindow, int Option)
     {
-        orderWindow.attendClient(Option);
+        orderWindow.attendClient(Option, (OrderID%99));
+        OrderID++;
     }
 
     // Preparacion del pedido
@@ -199,6 +199,65 @@ public:
     void prepararPedido(Order order)
     {
         order.prepare();
+
+        // Comprobar que haya inventario suficiente
+
+        /*
+        Hagamos de cuenta que esto no esta, fue que lo hice en una clase que no correspondia jaja y no lo queria borrar
+
+        for (Food comida : order.getFood())
+        {
+            for(string ingredient : comida.getIngredients())
+            {
+                if(!inventory.quantityIngredientFood(ingredient))
+                {
+                    // Comprar ingredientes
+                    inventory.buyFoodIngredient(ingredient);
+                    order.prepare();
+                }
+                else
+                {
+                    // Usar ingredientes
+                    inventory.UseFoodIngredientByName(ingredient);
+                }
+            }
+        }
+
+        for (Drink bebida : order.getDrink())
+        {
+            for(string ingredient : bebida.getIngredients())
+            {
+                if(!inventory.quantityIngredientDrink(ingredient))
+                {
+                    // Comprar ingredientes
+                    inventory.buyDrinkIngredient(ingredient);
+                    order.prepare();
+                }
+                else
+                {
+                    // Usar ingredientes
+                    inventory.UseDrinkIngredientByName(ingredient);
+                }
+            }
+        }
+
+        for (Dessert postre : order.getDessert())
+        {
+            for(string ingredient : postre.getIngredients())
+            {
+                if(!inventory.quantityIngredientDessert(ingredient))
+                {
+                    // Comprar ingredientes
+                    inventory.buyDessertIngredient(ingredient);
+                    order.prepare();
+                }
+                else
+                {
+                    // Usar ingredientes
+                    inventory.UseDessertIngredientByName(ingredient);
+                }
+            }
+        }*/
     }
 
     // Pagar el pedido
@@ -207,6 +266,7 @@ public:
     {
         // Se hace match del ID del cliente con el ID del pedido
         // Se paga el pedido
+        deliveryWindow.payOrder(orders.front());
     }
 
     // Retirar el pedido
@@ -215,6 +275,7 @@ public:
     {
         // Se hace match del ID del cliente con el ID del pedido
         // Se retira el pedido
+        deliveryWindow.deliverOrder(orders.front());
     }
 
     // Funcion para sacar el cliente de la ventana

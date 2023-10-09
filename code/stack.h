@@ -32,4 +32,9 @@ public:
     {
         return stackList.empty();
     }
+
+    int size()
+    {
+        return stackList.size();
+    }
 };

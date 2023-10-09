@@ -132,4 +132,46 @@ public:
             }
         }
     }
+
+    // Método para comprobar si hay suficientes ingredientes de comida
+    bool quantityIngredientFood(const string &foodIngredientName)
+    {
+        for (int i = 0; i < foodIngredient.size(); i++)
+        {
+            if (!foodIngredient[i].isEmpty() && foodIngredient[i].peek() == foodIngredientName)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Método para comprobar si hay suficientes ingredientes de bebida
+    bool quantityIngredientDrink(const string &drinkIngredientName)
+    {
+        for (int i = 0; i < drinkIngredient.size(); i++)
+        {
+            if (!drinkIngredient[i].isEmpty() && drinkIngredient[i].peek() == drinkIngredientName)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Método para comprobar si hay suficientes ingredientes de postre
+    bool quantityIngredientDessert(const string &dessertIngredientName)
+    {
+        for (int i = 0; i < dessertIngredient.size(); i++)
+        {
+            if (!dessertIngredient[i].isEmpty() && dessertIngredient[i].peek() == dessertIngredientName)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 };

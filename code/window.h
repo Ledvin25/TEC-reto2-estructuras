@@ -3,7 +3,6 @@
 #include <vector>
 #include "menu.h"
 #include <ctime>
-#include "orderCounter.h"
 
 using namespace std;
 
@@ -56,30 +55,23 @@ class Window
 class OrderWindow: public Window
 {
     private:
-        OrderCounter& orderCounter; // Referencia a OrderCounter
         int velocidadDeVentanaP;
         Menu menu;
 
     public :
 
-        OrderWindow(OrderCounter& orderCounter, Menu menu, int velocidadDeVentanaP, int cantMaximaporVentana)
-            : Window(true, cantMaximaporVentana), orderCounter(orderCounter), menu(menu), velocidadDeVentanaP(velocidadDeVentanaP) {}
-        ~OrderWindow();
+        OrderWindow(Menu menu, int velocidadDeVentanaP, int cantMaximaporVentana)
+            : Window(true, cantMaximaporVentana),  menu(menu), velocidadDeVentanaP(velocidadDeVentanaP) {};
 
         int getVelocidadDeVentana()
         {
             return velocidadDeVentanaP;
         }
 
-        int getOrderCounter()
-        {
-            return orderCounter.getNextOrderID();
-        }
-
         // Metodo para atender al cliente
-        Order attendClient(int opcion)
+        Order attendClient(int opcion, int orderID)
         {
-            Order order(orderCounter.getNextOrderID()); // Crear orden con el ID de la orden
+            Order order(orderID); // Crear orden con el ID de la orden
             srand(static_cast<unsigned int>(time(nullptr))); // generar el numero random
             if (opcion==1){ // si opciones 1, va a ser una comida y un refresco
                 // Generar un índice aleatorio dentro del rango del vector
@@ -112,7 +104,6 @@ class DeliveryWindow: public Window
 
         DeliveryWindow(int velocidadDeVentanaD, int cantMaximaporVentana)
             : Window(true, cantMaximaporVentana), velocidadDeVentanaD(velocidadDeVentanaD) {};
-        ~DeliveryWindow();
 
         int getVelocidadDeVentana()
         {
@@ -136,7 +127,7 @@ class DeliveryWindow: public Window
     
             windowQueue.pop();
             
-            return order;
+            return order; // Retornar la orden con el estado entregado y asi poder sacarla de la cola de ordenes
     
         }
 

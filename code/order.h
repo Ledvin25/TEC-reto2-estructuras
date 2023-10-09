@@ -73,13 +73,13 @@ public:
     }
 
     // Obtener las bebidas
-    vector<Drink> obtenerdrink()
+    vector<Drink> getDrink()
     {
         return drink;
     }
 
     // Obtener los postres
-    vector<Dessert> obtenerdessert()
+    vector<Dessert> getDessert()
     {
         return dessert;
     }
@@ -97,27 +97,6 @@ public:
     void prepare()
     {
         status = PREPARADO;
-        // Se comprueba que los productos escogidos, tengan stock suficiente en inventario, en caso de ser si se utilizan los ingredientes
-        // por lo tanto se restan de la pila correspondiente y la orden esta lista para continuar con el pago
-
-        // Iterar a traves de las comidas de la orden
-        for (int i = 0; i < food.size(); i++)
-        {
-            // Iterar a traves de los ingredientes de la comida
-            for (int j = 0; j < food[i].getIngredients().size(); j++)
-            {
-                // Iterar a traves de los ingredientes del inventario
-                for (int k = 0; k < inventory.getIngredients().size(); k++)
-                {
-                    // Si el ingrediente de la comida es igual al ingrediente del inventario
-                    if (food[i].getIngredients()[j].getName() == inventory.getIngredients()[k].getName())
-                    {
-                        // Se resta la cantidad de ingredientes de la comida a la cantidad de ingredientes del inventario
-                        inventory.getIngredients()[k].setQuantity(inventory.getIngredients()[k].getQuantity() - food[i].getIngredients()[j].getQuantity());
-                    }
-                }
-            }
-        }
     }
 
     // Pagar pedido
@@ -125,7 +104,6 @@ public:
     void pay()
     {
         status = PAGADO;
-        // Se comprueba que el pago sea correcto, en caso de serlo se procede a la entrega del pedido
     }
 
     // Entregar pedido

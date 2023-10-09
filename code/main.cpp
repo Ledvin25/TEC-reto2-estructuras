@@ -67,9 +67,12 @@ int main() {
 
     // Crear el menú
 
-    OrderCounter& orderCounter = OrderCounter::getInstance();
+    Menu menu;
 
-    
+    int order;
+
+
+    cout << "ID de la orden: " << order << endl;
 
     return 0;
 }
