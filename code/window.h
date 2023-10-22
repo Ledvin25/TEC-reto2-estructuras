@@ -75,40 +75,40 @@ class OrderWindow: public Window
             return velocidadDeVentanaP;
         }
 
-        Order attendClient(int opcion, int orderID)
+        Order& attendClient(int opcion, int orderID)
         {
-            // Crear orden con el ID de la orden
-            Order order(orderID); // Utiliza el constructor para crear un objeto, no "new"
+            // Crear orden con el ID de la orden (utilizando 'new' para crear un objeto en el heap)
+            Order* order = new Order(orderID);
 
-            if (opcion == 1) { // si opciones 1, va a ser una comida y un refresco
+            if (opcion == 1) { // si opción es 1, será una comida y un refresco
                 // Generar un índice aleatorio dentro del rango del vector
-                order.setTipoOrden(1);
+                order->setTipoOrden(1);
                 int i = rand() % menu.getFood().size();
-                order.addFood(menu.getFood()[i]);
+                order->addFood(menu.getFood()[i]);
                 i = rand() % menu.getDrink().size();
-                order.addDrink(menu.getDrink()[i]);
-                for (Food& comida : order.getFood()) { // Usa una referencia a Food
-                    cout << "Comida: " << comida.getName() << " Orden: " << order.getIdOrder() << endl;
+                order->addDrink(menu.getDrink()[i]);
+                for (Food& comida : order->getFood()) {
+                    cout << "Comida: " << comida.getName() << " Orden: " << order->getIdOrder() << endl;
                 }
-                for (Drink& fresco : order.getDrink()) { // Usa una referencia a Drink
-                    cout << "Refresco: " << fresco.getName() << " Orden: " << order.getIdOrder() << endl;
+                for (Drink& fresco : order->getDrink()) {
+                    cout << "Refresco: " << fresco.getName() << " Orden: " << order->getIdOrder() << endl;
                 }
             }
 
             // Lógica para seleccionar el producto
-            if (opcion == 2) { // si opciones 2, va a ser un postre
+            if (opcion == 2) { // si opción es 2, será un postre
                 // Generar un índice aleatorio dentro del rango del vector
                 int i = rand() % menu.getDessert().size();
-                order.setTipoOrden(2);
-                order.addDessert(menu.getDessert()[i]);
-                for (Dessert& postre : order.getDessert()) { // Usa una referencia a Dessert
-                    cout << "Postre: " << postre.getName() << " Orden: " << order.getIdOrder() << endl;
+                order->setTipoOrden(2);
+                order->addDessert(menu.getDessert()[i]);
+                for (Dessert& postre : order->getDessert()) {
+                    cout << "Postre: " << postre.getName() << " Orden: " << order->getIdOrder() << endl;
                 }
             }
 
-            order.process();
+            order->process();
 
-            return order;
+            return *order;
         }
 };
 

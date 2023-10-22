@@ -53,10 +53,11 @@ public:
         return queueList.size();
     }
 
-    T obtener_dato(int i)
+    T& obtener_dato(int i)
     {
         return queueList[i];
     }
+
 
     bool empty()
     {

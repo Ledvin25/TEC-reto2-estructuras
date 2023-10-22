@@ -201,7 +201,7 @@ public:
         }
         window->passClient(ID);
         ClientesAtendidos.push(window->removeClient());
-        ClientQueue.pop();
+        
 
         return window;
     }
@@ -211,21 +211,22 @@ public:
 
     void atenderCliente(OrderWindow* orderWindow, int Option)
     {
-        orders.push(orderWindow->attendClient(Option, (OrderID%99)));
+        Order& newOrder = orderWindow->attendClient(Option, (OrderID % 99));
+        orders.push(newOrder); // Agregar una referencia al objeto retornado
         OrderID++;
     }
 
     // Preparacion del pedido
 
-    void prepararPedido(Order order)
-    {
+   void prepararPedido(Order& order)
+   {
         // Comprobar que haya inventario suficiente
 
         for (Food& comida : order.getFood())
         {
-            for(string ingredient : comida.getIngredients())
+            for (string ingredient : comida.getIngredients())
             {
-                if(!inventory.quantityIngredientFood(ingredient))
+                if (!inventory.quantityIngredientFood(ingredient))
                 {
                     // Comprar ingredientes
                     inventory.buyFoodIngredient(ingredient);
@@ -241,9 +242,9 @@ public:
 
         for (Drink& bebida : order.getDrink())
         {
-            for(string ingredient : bebida.getIngredients())
+            for (string ingredient : bebida.getIngredients())
             {
-                if(!inventory.quantityIngredientDrink(ingredient))
+                if (!inventory.quantityIngredientDrink(ingredient))
                 {
                     // Comprar ingredientes
                     inventory.buyDrinkIngredient(ingredient);
@@ -259,9 +260,9 @@ public:
 
         for (Dessert& postre : order.getDessert())
         {
-            for(string ingredient : postre.getIngredients())
+            for (string ingredient : postre.getIngredients())
             {
-                if(!inventory.quantityIngredientDessert(ingredient))
+                if (!inventory.quantityIngredientDessert(ingredient))
                 {
                     // Comprar ingredientes
                     inventory.buyDessertIngredient(ingredient);
@@ -290,46 +291,48 @@ public:
         }
         window->passClient(ID);
         cout << "Ventana retiro " << window->getCantidadpersonas() << endl;
-        ClientesAtendidos.pop();
+        
     }
 
     // Pagar el pedido
 
-    void pagarPedido(Order order)
+    void pagarPedido(Order& order)
     {
         int NumVentana = 1;
-        for (DeliveryWindow window : ventanasRetiro) 
+        for (DeliveryWindow& window : ventanasRetiro) 
         {
             for (int i = 0; i < window.getClientes().size(); i++)
             {
-                if (order.getIdOrder()==window.getClientes().obtener_dato(i)){
-                    cout << "cliente que quiere retirar: " << window.getClientes().obtener_dato(i) <<  " Ventana: " <<NumVentana  << endl;
+                if (order.getIdOrder() == window.getClientes().obtener_dato(i))
+                {
+                    cout << "Cliente que quiere retirar: " << window.getClientes().obtener_dato(i) << " en Ventana: " << NumVentana << endl;
                     order.pay();
+                    // Si se encuentra una coincidencia, puedes romper el bucle si es necesario.
+                    break;
                 }
             } 
-           
-             
             NumVentana++;
         }
     }
 
     // Retirar el pedido
 
-    void retirarPedido(Order order)
+    void retirarPedido(Order& order)
     {
         int NumVentana = 1;
-        for (DeliveryWindow window : ventanasRetiro) 
+        for (DeliveryWindow& window : ventanasRetiro) 
         {
             for (int i = 0; i < window.getClientes().size(); i++)
             {
-                if (order.getIdOrder()==window.getClientes().obtener_dato(i)){
-                    cout << "cliente que retiro la orden: " << window.getClientes().obtener_dato(i) <<  " Ventana: " <<NumVentana  << endl;
+                if (order.getIdOrder() == window.getClientes().obtener_dato(i))
+                {
+                    cout << "Cliente que retiró la orden: " << order.getIdOrder() << " en Ventana: " << NumVentana << endl;
                     order.deliver();
                     window.removeClient();
+                    // Puedes romper el bucle una vez que se encuentra una coincidencia si es necesario.
+                    break;
                 }
             } 
-           
-             
             NumVentana++;
         }
     }
@@ -356,7 +359,7 @@ public:
         return ventanasRetiro;
     }
     
-    Queue<Order> getOrders()
+    Queue<Order>& getOrders()
     {
         return orders;
     }

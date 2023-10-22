@@ -48,7 +48,7 @@ int main() {
     {
         // Genera un número aleatorio entre 1 y 2 
         int resultado = (rand() % 2) + 1;
-        OrderWindow* ventanaAtendiendo = prueba.pasarCliente(prueba.getClientQueue().obtener_dato(i));
+        OrderWindow* ventanaAtendiendo = prueba.pasarCliente(prueba.getClientQueue().pop());
         prueba.atenderCliente(ventanaAtendiendo, resultado);
     }
 
@@ -61,7 +61,7 @@ int main() {
     // se pasan los clientes de las colas de las ventanas para ordenar para una cola para ir a la sventanas a retirar
     for (int i = 0; i < prueba.getClientesAtendidos().size(); i++) 
     {
-     prueba.EntregarAlCliente(prueba.getClientesAtendidos().obtener_dato(i));
+     prueba.EntregarAlCliente(prueba.getClientesAtendidos().pop());
     }
 
     // se paga el pedido
