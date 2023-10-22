@@ -12,8 +12,9 @@ using namespace std;
 
 class Simulation {
 private:
-    queue<Order> orders; // Cola de pedidos
-    queue<int> ClientQueue; // Cola de personas va a tener el ID de la
+    Queue<Order> orders; // Cola de pedidos
+    Queue<int> ClientQueue; // Cola de personas va a tener el ID de la
+    Queue<int> ClientesAtendidos;
     Saver saver; // Objeto para guardar la información de la simulación
     Inventory inventory; // Objeto para manejar el inventario
     Menu menu;
@@ -48,7 +49,11 @@ public:
         ventanasParaPedido(valoresIniciales.ventanasParaPedido),
         ventanasParaRetirar(valoresIniciales.ventanasParaRetirar),
         menu(),
-        inventory(inventory) {
+        inventory(),
+        orders("Cola de ordenes"),
+        ClientQueue("Cola de clientes sin ser atendidos"),
+        ClientesAtendidos("Cola de clientes atendidos")
+        {
     }
 
 
@@ -105,7 +110,7 @@ public:
         
     }
 
-    void setmenu(JSON productos)
+    void setMenu(JSON productos)
     {
         json comidas = productos.getMenuComidas();
         json refrescos = productos.getMenuRefrescos();
@@ -142,31 +147,35 @@ public:
     void setInventario(JSON productos)
     {
         json ingredientes_comidas = productos.getPilaComidas();
-        json ingredientes_refrescos = productos.getMenuRefrescos();
+        json ingredientes_refrescos = productos.getPilaRefrescos();
         json ingredientes_postres = productos.getPilaPostres();
-        
+
+        // Convierte los elementos de las pilas en vectores de strings
+        vector<string> comidas = ingredientes_comidas;
+        vector<string> refrescos = ingredientes_refrescos;
+        vector<string> postres = ingredientes_postres;
 
         inventory.setMaxIngredientQuantity(cantMaxIngrediente);
 
-        for (string elemento : ingredientes_comidas){
-            Stack<string> pila_ingrediente; // crear pila de ingredientes de x tamaño segun indique json
-            for (int i = 0; i<cantMaxIngrediente; ++i){
+        for (const string& elemento : comidas){
+            Stack<string> pila_ingrediente("pila de " + elemento); // crear pila de ingredientes de x tamaño segun indique json
+            for (int i = 0; i<inventory.getMaxIngredientQuantity(); ++i){
                 pila_ingrediente.push(elemento); // agregar pila a inventario por cada elemento
             }
             inventory.addFoodIngredient(pila_ingrediente);
         }
 
-        for (string elemento : ingredientes_refrescos){
-            Stack<string> pila_ingrediente; // crear pila de ingredientes de x tamaño segun indique json
-            for (int i = 0; i<cantMaxIngrediente; ++i){
+        for (const string& elemento : refrescos){
+            Stack<string> pila_ingrediente("pila de " + elemento); // crear pila de ingredientes de x tamaño segun indique json
+            for (int i = 0; i<inventory.getMaxIngredientQuantity(); ++i){
                 pila_ingrediente.push(elemento);
             }
             inventory.addFoodIngredient(pila_ingrediente); // agregar pila a inventario por cada elemento
         }
         
-        for (string elemento : ingredientes_postres){
-            Stack<string> pila_ingrediente; // crear pila de ingredientes de x tamaño segun indique json
-            for (int i = 0; i<cantMaxIngrediente; ++i){ 
+        for (const string& elemento : postres){
+            Stack<string> pila_ingrediente("pila de " + elemento); // crear pila de ingredientes de x tamaño segun indique json
+            for (int i = 0; i<inventory.getMaxIngredientQuantity(); ++i){ 
                 pila_ingrediente.push(elemento);
             }
             inventory.addFoodIngredient(pila_ingrediente); // agregar pila a inventario por cada elemento
@@ -180,17 +189,29 @@ public:
         ClientQueue.push(id);
     }
 
-    // Funcion para pasar el cliente a la ventana con menos cola
-    void pasarCliente(Window window)
+    OrderWindow* pasarCliente(int ID)
     {
-        window.passClient(ClientQueue);
+        OrderWindow* window = &ventanasPedido[0];
+        for (OrderWindow& x : ventanasPedido)
+        {
+            if (x.getCantidadpersonas() < window->getCantidadpersonas()) // se ve que ventana tiene menos gente 
+            {
+                window = &x;
+            }
+        }
+        window->passClient(ID);
+        ClientesAtendidos.push(window->removeClient());
+        ClientQueue.pop();
+
+        return window;
     }
+
 
     // Funcion para atender al cliente
 
-    void atenderCliente(OrderWindow orderWindow, int Option)
+    void atenderCliente(OrderWindow* orderWindow, int Option)
     {
-        orderWindow.attendClient(Option, (OrderID%99));
+        orders.push(orderWindow->attendClient(Option, (OrderID%99)));
         OrderID++;
     }
 
@@ -198,14 +219,9 @@ public:
 
     void prepararPedido(Order order)
     {
-        order.prepare();
-
         // Comprobar que haya inventario suficiente
 
-        /*
-        Hagamos de cuenta que esto no esta, fue que lo hice en una clase que no correspondia jaja y no lo queria borrar
-
-        for (Food comida : order.getFood())
+        for (Food& comida : order.getFood())
         {
             for(string ingredient : comida.getIngredients())
             {
@@ -223,7 +239,7 @@ public:
             }
         }
 
-        for (Drink bebida : order.getDrink())
+        for (Drink& bebida : order.getDrink())
         {
             for(string ingredient : bebida.getIngredients())
             {
@@ -241,7 +257,7 @@ public:
             }
         }
 
-        for (Dessert postre : order.getDessert())
+        for (Dessert& postre : order.getDessert())
         {
             for(string ingredient : postre.getIngredients())
             {
@@ -257,31 +273,104 @@ public:
                     inventory.UseDessertIngredientByName(ingredient);
                 }
             }
-        }*/
+        }
+        order.prepare();
+    }
+
+    void EntregarAlCliente(int ID)
+    {
+        DeliveryWindow* window = &ventanasRetiro[0];
+        cout << "Cliente para retirar: " << ID << endl;
+        for (DeliveryWindow& x : ventanasRetiro)
+        {
+            if (x.getCantidadpersonas() < window->getCantidadpersonas())
+            {
+                window = &x;
+            }
+        }
+        window->passClient(ID);
+        cout << "Ventana retiro " << window->getCantidadpersonas() << endl;
+        ClientesAtendidos.pop();
     }
 
     // Pagar el pedido
 
-    void pagarPedido(DeliveryWindow deliveryWindow)
+    void pagarPedido(Order order)
     {
-        // Se hace match del ID del cliente con el ID del pedido
-        // Se paga el pedido
-        deliveryWindow.payOrder(orders.front());
+        int NumVentana = 1;
+        for (DeliveryWindow window : ventanasRetiro) 
+        {
+            for (int i = 0; i < window.getClientes().size(); i++)
+            {
+                if (order.getIdOrder()==window.getClientes().obtener_dato(i)){
+                    cout << "cliente que quiere retirar: " << window.getClientes().obtener_dato(i) <<  " Ventana: " <<NumVentana  << endl;
+                    order.pay();
+                }
+            } 
+           
+             
+            NumVentana++;
+        }
     }
 
     // Retirar el pedido
 
-    void retirarPedido(DeliveryWindow deliveryWindow)
+    void retirarPedido(Order order)
     {
-        // Se hace match del ID del cliente con el ID del pedido
-        // Se retira el pedido
-        deliveryWindow.deliverOrder(orders.front());
+        int NumVentana = 1;
+        for (DeliveryWindow window : ventanasRetiro) 
+        {
+            for (int i = 0; i < window.getClientes().size(); i++)
+            {
+                if (order.getIdOrder()==window.getClientes().obtener_dato(i)){
+                    cout << "cliente que retiro la orden: " << window.getClientes().obtener_dato(i) <<  " Ventana: " <<NumVentana  << endl;
+                    order.deliver();
+                    window.removeClient();
+                }
+            } 
+           
+             
+            NumVentana++;
+        }
     }
 
-    // Funcion para sacar el cliente de la ventana
-    void sacarCliente(Window window)
+    
+
+    Menu getMenu()
     {
-        window.removeClient();
+        return menu;
     }
+
+    Inventory getInventory()
+    {
+        return inventory;
+    }
+
+    vector<OrderWindow> getOrderWindows()
+    {
+        return ventanasPedido;
+    } 
+    
+    vector<DeliveryWindow> getDeliveryWindows()
+    {
+        return ventanasRetiro;
+    }
+    
+    Queue<Order> getOrders()
+    {
+        return orders;
+    }
+
+    Queue<int> getClientQueue()
+    {
+        return ClientQueue;
+    }
+
+    Queue<int> getClientesAtendidos()
+    {
+        return ClientesAtendidos;
+    }
+   
+
 
 };

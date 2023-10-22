@@ -25,6 +25,7 @@ private:
     int idOrder;
     chrono::system_clock::time_point tiempo; // fuuro atributo para fecha y hora
     Inventory inventory;
+    int TipoOrden;
 
 public:
 
@@ -46,6 +47,17 @@ public:
     int getIdOrder()
     {
         return idOrder;
+    }
+
+
+    void setTipoOrden(int tipo)
+    {
+        this->TipoOrden=tipo;
+    }
+
+    int getTipoOrden()
+    {
+        return TipoOrden;
     }
 
     // Agregar Food

@@ -4,8 +4,11 @@
 #include <unordered_map>
 #include <vector>
 #include "simulation.h"
+#include <cstdlib> // Para la función rand
+#include <ctime>   // Para inicializar la semilla del generador de números aleatorios
 using json = nlohmann::json;
 using namespace std;
+
 
 int main() {
     // Lee el archivo JSON en un objeto json
@@ -24,55 +27,59 @@ int main() {
     }
     JSON datos(config);
     
+    Simulation prueba(datos.getConfiguracionSimulador());
+    srand(static_cast<unsigned int>(time(nullptr))); // semilla para generar número random
+    prueba.setMenu(datos);
+    prueba.setInventario(datos);
+    prueba.setWindows();
+    Menu menu = prueba.getMenu();
+    Inventory inventario = prueba.getInventory();
+    vector<OrderWindow> ventanasPedido = prueba.getOrderWindows();
+    vector<DeliveryWindow> ventanasRetiro = prueba.getDeliveryWindows();
    
+    // hacer cola para entrar
+    for (int j = 0 ; j<5 ; j++)
+    {
+     prueba.hacerCola(j);
+    }
+
+    // se pasa al cliente a las colas de las distintas ventanas 
+    for (int i = 0; i < prueba.getClientQueue().size(); i++) 
+    {
+        // Genera un número aleatorio entre 1 y 2 
+        int resultado = (rand() % 2) + 1;
+        OrderWindow* ventanaAtendiendo = prueba.pasarCliente(prueba.getClientQueue().obtener_dato(i));
+        prueba.atenderCliente(ventanaAtendiendo, resultado);
+    }
+
+    // se prepara cada pedido
+    for (int i = 0; i < prueba.getOrders().size(); i++) 
+    {
+        prueba.prepararPedido(prueba.getOrders().obtener_dato(i));
+    }
+
+    // se pasan los clientes de las colas de las ventanas para ordenar para una cola para ir a la sventanas a retirar
+    for (int i = 0; i < prueba.getClientesAtendidos().size(); i++) 
+    {
+     prueba.EntregarAlCliente(prueba.getClientesAtendidos().obtener_dato(i));
+    }
+
+    // se paga el pedido
+    for (int i = 0; i < prueba.getOrders().size(); i++) 
+    {
+        prueba.pagarPedido(prueba.getOrders().obtener_dato(i));
+    }
+
+    // se retira y se saca la gente de la cola de las ventanas para retirar y de la cola de las orders
+    for (int i = 0; i < prueba.getOrders().size(); i++) 
+    {
+        prueba.retirarPedido(prueba.getOrders().obtener_dato(i));
+        cout << "Estado de la orden: " << prueba.getOrders().obtener_dato(i).getIdOrder() << " es " 
+        << prueba.getOrders().obtener_dato(i).getStatus() << endl;
+        prueba.getOrders().pop();
+    }
+
    
-    // Crea un unordered_map para almacenar las comidas y sus ingredientes
-    unordered_map<string, vector<string>> todasLasComidas;
-    json comidas1 = datos.getMenuComidas();
-    // Itera a través de las comidas y sus ingredientes
-    for (json::iterator it = comidas1.begin(); it != comidas1.end(); ++it) {
-        string nombreComida = it.key();
-        cout << "Nombre de la comida: " << nombreComida << endl;
-        vector<string> ingredientes = it.value();
-        for (string ingrediente:ingredientes){
-            cout << " - " << ingrediente << endl;
-        }
-        
-       
-    }
-    json pila_comidas = datos.getPilaComidas();
-    json pila_refrescos = datos.getPilaRefrescos();
-    json pila_postres = datos.getPilaPostres();
-
-    // Convierte los elementos de las pilas en vectores de strings
-    vector<string> comidas = pila_comidas;
-    vector<string> refrescos = pila_refrescos;
-    vector<string> postres = pila_postres;
-
-    // Imprime los elementos de cada pila
-    cout << "Pila de Comidas:" << endl;
-    for (const string& comida : comidas) {
-        cout << " - " << comida << endl;
-    }
-
-    cout << "Pila de Refrescos:" << endl;
-    for (const string& refresco : refrescos) {
-        cout << " - " << refresco << endl;
-    }
-
-    cout << "Pila de Postres:" << endl;
-    for (const string& postre : postres) {
-        cout << " - " << postre << endl;
-    }
-
-    // Crear el menú
-
-    Menu menu;
-
-    int order;
-
-
-    cout << "ID de la orden: " << order << endl;
 
     return 0;
 }

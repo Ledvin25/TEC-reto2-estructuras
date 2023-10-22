@@ -3,7 +3,7 @@
 #include <vector>
 #include "menu.h"
 #include <ctime>
-
+#include "queue.h"
 using namespace std;
 
 class Window
@@ -12,11 +12,11 @@ class Window
     
         bool available;
         int cantMaximaporVentana;
-        queue<int> windowQueue; // Cola de personas va tener el ID de la persona
+        Queue<int> windowQueue; // Cola de personas va tener el ID de la persona
         
     public:
         // Constructor con parametros
-        Window(bool available, int cantMaximaporVentana)
+        Window(bool available, int cantMaximaporVentana):windowQueue("Cola de ventana")
         {
             this->available = true;
             this->cantMaximaporVentana = cantMaximaporVentana;
@@ -31,24 +31,31 @@ class Window
         {
             return cantMaximaporVentana;
         }
+
+        int getCantidadpersonas()
+        {
+            return windowQueue.size();
+        }
     
         // Metodo para pasar el cliente a la ventana
-        void passClient(queue<int> clientQueue)
+        void passClient(int ID)
         {
             // comprobar si en la cola no hay mas de cantMaximaporVentana
-            if (windowQueue.size() < cantMaximaporVentana)
+            if ( windowQueue.size() < cantMaximaporVentana)
             {
                 // Aqui se pasa el cliente a la ventana 
-                windowQueue.push(clientQueue.front());
+                windowQueue.push(ID);
             }
         }
 
         // Metodo para sacar el cliente de la ventana
 
-        void removeClient()
+        int removeClient()
         {
             // Aqui se saca el cliente de la ventana
-            windowQueue.pop();
+            
+            return windowQueue.pop();
+            
         }
 };
 
@@ -68,29 +75,39 @@ class OrderWindow: public Window
             return velocidadDeVentanaP;
         }
 
-        // Metodo para atender al cliente
         Order attendClient(int opcion, int orderID)
         {
-            Order order(orderID); // Crear orden con el ID de la orden
-            srand(static_cast<unsigned int>(time(nullptr))); // generar el numero random
-            if (opcion==1){ // si opciones 1, va a ser una comida y un refresco
+            // Crear orden con el ID de la orden
+            Order order(orderID); // Utiliza el constructor para crear un objeto, no "new"
+
+            if (opcion == 1) { // si opciones 1, va a ser una comida y un refresco
                 // Generar un índice aleatorio dentro del rango del vector
+                order.setTipoOrden(1);
                 int i = rand() % menu.getFood().size();
                 order.addFood(menu.getFood()[i]);
                 i = rand() % menu.getDrink().size();
                 order.addDrink(menu.getDrink()[i]);
+                for (Food& comida : order.getFood()) { // Usa una referencia a Food
+                    cout << "Comida: " << comida.getName() << " Orden: " << order.getIdOrder() << endl;
+                }
+                for (Drink& fresco : order.getDrink()) { // Usa una referencia a Drink
+                    cout << "Refresco: " << fresco.getName() << " Orden: " << order.getIdOrder() << endl;
+                }
             }
 
-            // Logica para seleccionar el producto
-            if (opcion==2){ // si opciones 2, va a ser un postre
+            // Lógica para seleccionar el producto
+            if (opcion == 2) { // si opciones 2, va a ser un postre
                 // Generar un índice aleatorio dentro del rango del vector
                 int i = rand() % menu.getDessert().size();
+                order.setTipoOrden(2);
                 order.addDessert(menu.getDessert()[i]);
-                
+                for (Dessert& postre : order.getDessert()) { // Usa una referencia a Dessert
+                    cout << "Postre: " << postre.getName() << " Orden: " << order.getIdOrder() << endl;
+                }
             }
-            
+
             order.process();
-    
+
             return order;
         }
 };
@@ -110,25 +127,20 @@ class DeliveryWindow: public Window
             return velocidadDeVentanaD;
         }
 
-        // Metodo para pagar la orden y comprobar el id de la orden y del cliente
-        Order payOrder(Order order)
+        Queue<int> getClientes()
         {
-            // Aqui se paga la orden
-            order.pay();
-    
-            return order;
+            return windowQueue;
         }
 
-        // Metodo para entregar la orden
+ 
         Order deliverOrder(Order order)
         {
-            // Aqui se entrega la orden cuando este lista y pagada y comprobar el id de la orden y del cliente
+            // Aquí se entrega la orden cuando esté lista y pagada y se comprueba el ID de la orden y del cliente
             order.deliver();
-    
+
             windowQueue.pop();
-            
-            return order; // Retornar la orden con el estado entregado y asi poder sacarla de la cola de ordenes
-    
+
+            return order; // Retornar un puntero a la orden con el estado entregado
         }
 
 };
