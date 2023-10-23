@@ -196,8 +196,9 @@ public:
 
                 cout << "Cliente " << id << " en cola" << endl;
 
+                int duracion = velocidadDeLlegada * 60 / tiempoSimulacionHora;
                 // Pausa de tiempo de llegada
-                std::this_thread::sleep_for(std::chrono::minutes(velocidadDeLlegada/tiempoSimulacionHora));
+                std::this_thread::sleep_for(std::chrono::seconds(duracion));
             }
         }
     }
@@ -382,7 +383,9 @@ public:
         int resultado = (rand() % 2) + 1;
         atenderCliente(ventanaAtendiendo, resultado);
 
-        std::this_thread::sleep_for(std::chrono::minutes(velocidadParaAtender/tiempoSimulacionHora));
+        int duracion = velocidadParaAtender * 60 / tiempoSimulacionHora;
+
+        std::this_thread::sleep_for(std::chrono::seconds(duracion));
 
         ClientesAtendidos.push(ventanaAtendiendo->removeClient()); // se pasa el cliente a la cola de clientes atendidos
     }
@@ -399,7 +402,9 @@ public:
 
         int tiempoPreparacion = (rand() % 6) + 5;
 
-        std::this_thread::sleep_for(std::chrono::minutes(tiempoPreparacion/tiempoSimulacionHora));
+        int duracion = tiempoPreparacion * 60 / tiempoSimulacionHora;
+
+        std::this_thread::sleep_for(std::chrono::minutes(duracion));
 
         id++;
     }
@@ -415,7 +420,9 @@ public:
 
         pagarPedido(orders.obtener_dato(ID));
 
-        std::this_thread::sleep_for(std::chrono::minutes(3/tiempoSimulacionHora));
+        int duracion = 180 / tiempoSimulacionHora;
+
+        std::this_thread::sleep_for(std::chrono::minutes(duracion));
 
         retirarPedido(orders.obtener_dato(ID));
 
@@ -434,15 +441,19 @@ public:
 
         while (tiempo <= tiempoFinal)
         {
-            //std::thread ventanas(&Simulation::windowWork, this); // se pasa al cliente a las colas de las distintas ventanas
-            //std::thread cocina(&Simulation::kitchen, this); // se prepara cada pedido
-            //std::thread retiro(&Simulation::deliveryWork, this); // se pasan los clientes de las colas de las ventanas para ordenar para una cola para ir a la sventanas a retirar
+            std::thread ventanas(&Simulation::windowWork, this); // se pasa al cliente a las colas de las distintas ventanas
+            std::thread cocina(&Simulation::kitchen, this); // se prepara cada pedido
+            std::thread retiro(&Simulation::deliveryWork, this); // se pasan los clientes de las colas de las ventanas para ordenar para una cola para ir a la sventanas a retirar
             
             int factorDeEscala = tiempoSimulacionHora;
             std::this_thread::sleep_for(std::chrono::seconds(1) / factorDeEscala);
 
             tiempo++;
+
+            ventanas.join();
         }
+
+        cola.join();
 
     }
 
