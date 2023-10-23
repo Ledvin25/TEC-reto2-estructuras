@@ -5,9 +5,11 @@
 #include <string>
 #include "inventory.h"
 #include "window.h"
-#include "saver.h"
 #include "getJson.h"
 #include <vector>
+#include <thread>
+#include <chrono>
+
 using namespace std;
 
 class Simulation {
@@ -15,7 +17,6 @@ private:
     Queue<Order> orders; // Cola de pedidos
     Queue<int> ClientQueue; // Cola de personas va a tener el ID de la
     Queue<int> ClientesAtendidos;
-    Saver saver; // Objeto para guardar la información de la simulación
     Inventory inventory; // Objeto para manejar el inventario
     Menu menu;
     vector<OrderWindow> ventanasPedido;
@@ -56,41 +57,39 @@ public:
         {
     }
 
-
-
-    // Inicia la simulación
-    void run() {
-        cout << "Iniciando la simulación." << endl;
-        // Lógica para iniciar la simulación
+    Menu getMenu()
+    {
+        return menu;
     }
 
-    // Detiene la simulación
-    void stop() {
-        cout << "Deteniendo la simulación." << endl;
-        // Lógica para detener la simulación
+    Inventory getInventory()
+    {
+        return inventory;
     }
 
-    // Reinicia la simulación
-    void restart() {
-        cout << "Reiniciando la simulación." << endl;
-        // Lógica para reiniciar la simulación y limpiar los datos
+    vector<OrderWindow> getOrderWindows()
+    {
+        return ventanasPedido;
+    } 
+    
+    vector<DeliveryWindow> getDeliveryWindows()
+    {
+        return ventanasRetiro;
+    }
+    
+    Queue<Order>& getOrders()
+    {
+        return orders;
     }
 
-    // Actualiza la simulación
-    void load() {
-        cout << "Actualizando la simulación." << endl;
-        
-        // Lógica para actualizar la simulación con los datos extraidos del saver.load()
-
-        saver.load();
+    Queue<int>& getClientQueue()
+    {
+        return ClientQueue;
     }
 
-    // Guarda la simulación
-
-    void save() {
-        cout << "Guardando la simulación." << endl;
-        // Lógica para guardar la simulación en un archivo JSON
-        saver.save();
+    Queue<int>& getClientesAtendidos()
+    {
+        return ClientesAtendidos;
     }
 
     // Crear la cantidad de ventanas extraidas del JSON
@@ -184,9 +183,23 @@ public:
     }
 
     // Funcion para agregar un cliente a la cola
-    void hacerCola(int id)
+    void hacerCola()
     {
-        ClientQueue.push(id);
+        int id = 0;
+
+        while(true)
+        {
+            if(id < 100)
+            {
+                ClientQueue.push(id%99);
+                id++;
+
+                cout << "Cliente " << id << " en cola" << endl;
+
+                // Pausa de tiempo de llegada
+                std::this_thread::sleep_for(std::chrono::seconds(velocidadDeLlegada));
+            }
+        }
     }
 
     OrderWindow* pasarCliente(int ID)
@@ -200,9 +213,7 @@ public:
             }
         }
         window->passClient(ID);
-        ClientesAtendidos.push(window->removeClient());
         
-
         return window;
     }
 
@@ -278,7 +289,7 @@ public:
         order.prepare();
     }
 
-    void EntregarAlCliente(int ID)
+    int EntregarAlCliente(int ID)
     {
         DeliveryWindow* window = &ventanasRetiro[0];
         cout << "Cliente para retirar: " << ID << endl;
@@ -291,7 +302,8 @@ public:
         }
         window->passClient(ID);
         cout << "Ventana retiro " << window->getCantidadpersonas() << endl;
-        
+
+        return ID;
     }
 
     // Pagar el pedido
@@ -307,7 +319,6 @@ public:
                 {
                     cout << "Cliente que quiere retirar: " << window.getClientes().obtener_dato(i) << " en Ventana: " << NumVentana << endl;
                     order.pay();
-                    // Si se encuentra una coincidencia, puedes romper el bucle si es necesario.
                     break;
                 }
             } 
@@ -329,51 +340,109 @@ public:
                     cout << "Cliente que retiró la orden: " << order.getIdOrder() << " en Ventana: " << NumVentana << endl;
                     order.deliver();
                     window.removeClient();
-                    // Puedes romper el bucle una vez que se encuentra una coincidencia si es necesario.
                     break;
                 }
             } 
             NumVentana++;
         }
     }
-
-    
-
-    Menu getMenu()
-    {
-        return menu;
-    }
-
-    Inventory getInventory()
-    {
-        return inventory;
-    }
-
-    vector<OrderWindow> getOrderWindows()
-    {
-        return ventanasPedido;
-    } 
-    
-    vector<DeliveryWindow> getDeliveryWindows()
-    {
-        return ventanasRetiro;
-    }
-    
-    Queue<Order>& getOrders()
-    {
-        return orders;
-    }
-
-    Queue<int> getClientQueue()
-    {
-        return ClientQueue;
-    }
-
-    Queue<int> getClientesAtendidos()
-    {
-        return ClientesAtendidos;
-    }
    
+    void load()
+    {
+        json config;
 
+        ifstream file("conf.json");
+        if (!file.is_open()) {
+            cout << "Error al abrir el archivo." << endl;
+        }
+
+        try {
+            file >> config;
+        } catch (json::parse_error& e) {
+            cout << "Error de parseo JSON: " << e.what() << endl;
+        }
+
+        JSON data(config);
+
+        setMenu(data);
+        setInventario(data);
+        setWindows();
+    }
+
+    // ---------------------------- Metodos para la simulacion ---------------------------- //
+
+    void windowWork()
+    {
+        if (ClientQueue.size() == 0)
+        {
+            return;
+        }
+
+        OrderWindow* ventanaAtendiendo = pasarCliente(ClientQueue.pop());
+        int resultado = (rand() % 2) + 1;
+        atenderCliente(ventanaAtendiendo, resultado);
+
+        std::this_thread::sleep_for(std::chrono::seconds(velocidadParaAtender));
+
+        ClientesAtendidos.push(ventanaAtendiendo->removeClient()); // se pasa el cliente a la cola de clientes atendidos
+    }
+
+    void kitchen()
+    {
+        if (orders.size() == 0)
+        {
+            return;
+        }
+
+        int id = 0;
+        prepararPedido(orders.obtener_dato(id));
+
+        int tiempoPreparacion = (rand() % 6) + 5;
+
+        std::this_thread::sleep_for(std::chrono::seconds(tiempoPreparacion));
+
+        id++;
+    }
+
+    void deliveryWork()
+    {
+        if(ClientesAtendidos.size() == 0)
+        {
+            return;
+        }
+
+        int ID = EntregarAlCliente(ClientesAtendidos.pop());
+
+        pagarPedido(orders.obtener_dato(ID));
+
+        std::this_thread::sleep_for(std::chrono::seconds(3));
+
+        retirarPedido(orders.obtener_dato(ID));
+
+        orders.pop();
+
+    }
+
+    // Inicia la simulación
+    void run() {
+        
+        // Meter personas a la cola de llegada cada x tiempo
+        std::thread cola(&Simulation::hacerCola, this);
+
+        while (true)
+        {
+            
+            std::thread ventanas(&Simulation::windowWork, this); // se pasa al cliente a las colas de las distintas ventanas
+            std::thread cocina(&Simulation::kitchen, this); // se prepara cada pedido
+            std::thread retiro(&Simulation::deliveryWork, this); // se pasan los clientes de las colas de las ventanas para ordenar para una cola para ir a la sventanas a retirar
+        }
+
+    }
+
+    // Detiene la simulación
+    void stop() {
+        cout << "Deteniendo la simulación." << endl;
+        // Lógica para detener la simulación
+    }
 
 };

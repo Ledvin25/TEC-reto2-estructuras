@@ -6,6 +6,7 @@
 #include "simulation.h"
 #include <cstdlib> // Para la función rand
 #include <ctime>   // Para inicializar la semilla del generador de números aleatorios
+#include <cstdlib>
 using json = nlohmann::json;
 using namespace std;
 
@@ -28,20 +29,17 @@ int main() {
     JSON datos(config);
     
     Simulation prueba(datos.getConfiguracionSimulador());
-    srand(static_cast<unsigned int>(time(nullptr))); // semilla para generar número random
+    
     prueba.setMenu(datos);
     prueba.setInventario(datos);
     prueba.setWindows();
-    Menu menu = prueba.getMenu();
-    Inventory inventario = prueba.getInventory();
-    vector<OrderWindow> ventanasPedido = prueba.getOrderWindows();
-    vector<DeliveryWindow> ventanasRetiro = prueba.getDeliveryWindows();
    
     // hacer cola para entrar
     for (int j = 0 ; j<5 ; j++)
     {
-     prueba.hacerCola(j);
+        prueba.hacerCola();
     }
+
 
     // se pasa al cliente a las colas de las distintas ventanas 
     for (int i = 0; i < prueba.getClientQueue().size(); i++) 
@@ -52,17 +50,20 @@ int main() {
         prueba.atenderCliente(ventanaAtendiendo, resultado);
     }
 
+
     // se prepara cada pedido
     for (int i = 0; i < prueba.getOrders().size(); i++) 
     {
         prueba.prepararPedido(prueba.getOrders().obtener_dato(i));
     }
 
+
     // se pasan los clientes de las colas de las ventanas para ordenar para una cola para ir a la sventanas a retirar
     for (int i = 0; i < prueba.getClientesAtendidos().size(); i++) 
     {
      prueba.EntregarAlCliente(prueba.getClientesAtendidos().pop());
     }
+
 
     // se paga el pedido
     for (int i = 0; i < prueba.getOrders().size(); i++) 
@@ -78,7 +79,6 @@ int main() {
         << prueba.getOrders().obtener_dato(i).getStatus() << endl;
         prueba.getOrders().pop();
     }
-
    
 
     return 0;

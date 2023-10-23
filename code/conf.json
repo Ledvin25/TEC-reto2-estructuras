@@ -1,8 +1,8 @@
 {
-  "tiempoSimulacionHora": 20000, 
+  "tiempoSimulacionHora": 1, 
   "minHora" : 11,
   "maxHora" : 21,
-  "velocidadDeLlegada" : 1,
+  "velocidadDeLlegada" : 5,
   "ventanasParaPedido" : 5, 
   "velocidadParaAtender" : 5, 
   "ventanasParaRetirar" : 2,
