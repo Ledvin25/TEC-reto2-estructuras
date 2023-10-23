@@ -1,5 +1,5 @@
 {
-  "tiempoSimulacionHora": 1, 
+  "tiempoSimulacionHora": 2,
   "minHora" : 11,
   "maxHora" : 21,
   "velocidadDeLlegada" : 5,
