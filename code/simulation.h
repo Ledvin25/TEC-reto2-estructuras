@@ -192,9 +192,10 @@ public:
             if(id < 100)
             {
                 ClientQueue.push(id%99);
-                id++;
 
                 cout << "Cliente " << id << " en cola de espera" << endl << endl;
+
+                id++;
 
                 int duracion = velocidadDeLlegada * 60 / tiempoSimulacionHora;
                 // Pausa de tiempo de llegada
@@ -227,6 +228,8 @@ public:
     {
         Order& newOrder = orderWindow->attendClient(Option, (OrderID % 99));
         orders.push(newOrder); // Agregar una referencia al objeto retornado
+
+        cout << "Se genero la orden " << OrderID << endl << endl;
         OrderID++;
     }
 
@@ -402,6 +405,8 @@ public:
         int id = 0;
         prepararPedido(orders.obtener_dato(id));
 
+        cout << "Se preparó el pedido " << id << endl << endl;
+
         int tiempoPreparacion = (rand() % 6) + 5;
 
         int duracion = tiempoPreparacion * 60 / tiempoSimulacionHora;
@@ -422,11 +427,15 @@ public:
 
         pagarPedido(orders.obtener_dato(ID));
 
-        int duracion = 180 / tiempoSimulacionHora;
+        cout << "Se pagó el pedido " << ID << endl << endl;
+
+        int duracion = 30 / tiempoSimulacionHora;
 
         std::this_thread::sleep_for(std::chrono::minutes(duracion));
 
         retirarPedido(orders.obtener_dato(ID));
+
+        cout << "Se retiró el pedido " << ID << endl << endl;
 
         orders.pop();
 
