@@ -407,11 +407,9 @@ public:
 
         cout << "Se preparó el pedido " << id << endl << endl;
 
-        int tiempoPreparacion = (rand() % 6) + 5;
+        int duracion = 120 / tiempoSimulacionHora;
 
-        int duracion = tiempoPreparacion * 60 / tiempoSimulacionHora;
-
-        std::this_thread::sleep_for(std::chrono::minutes(duracion));
+        std::this_thread::sleep_for(std::chrono::seconds(duracion));
 
         id++;
     }
@@ -431,7 +429,7 @@ public:
 
         int duracion = 30 / tiempoSimulacionHora;
 
-        std::this_thread::sleep_for(std::chrono::minutes(duracion));
+        std::this_thread::sleep_for(std::chrono::seconds(duracion));
 
         retirarPedido(orders.obtener_dato(ID));
 
