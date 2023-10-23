@@ -194,7 +194,7 @@ public:
                 ClientQueue.push(id%99);
                 id++;
 
-                cout << "Cliente " << id << " en cola" << endl;
+                cout << "Cliente " << id << " en cola de espera" << endl << endl;
 
                 int duracion = velocidadDeLlegada * 60 / tiempoSimulacionHora;
                 // Pausa de tiempo de llegada
@@ -214,6 +214,8 @@ public:
             }
         }
         window->passClient(ID);
+
+        cout << "El cliente " << ID << " pasó a una ventana para pedir. " << endl << endl; // se pasa el cliente a la ventana " << window->getCantidadpersonas() << endl << endl
         
         return window;
     }
@@ -302,7 +304,7 @@ public:
             }
         }
         window->passClient(ID);
-        cout << "Ventana retiro " << window->getCantidadpersonas() << endl;
+        cout << "Ventana retiro " << window->getCantidadpersonas() << endl << endl;
 
         return ID;
     }
@@ -318,7 +320,7 @@ public:
             {
                 if (order.getIdOrder() == window.getClientes().obtener_dato(i))
                 {
-                    cout << "Cliente que quiere retirar: " << window.getClientes().obtener_dato(i) << " en Ventana: " << NumVentana << endl;
+                    cout << "Cliente que quiere retirar: " << window.getClientes().obtener_dato(i) << " en Ventana: " << NumVentana << endl << endl;
                     order.pay();
                     break;
                 }
@@ -338,7 +340,7 @@ public:
             {
                 if (order.getIdOrder() == window.getClientes().obtener_dato(i))
                 {
-                    cout << "Cliente que retiró la orden: " << order.getIdOrder() << " en Ventana: " << NumVentana << endl;
+                    cout << "Cliente que retiró la orden: " << order.getIdOrder() << " en Ventana: " << NumVentana << endl << endl;
                     order.deliver();
                     window.removeClient();
                     break;
@@ -450,7 +452,11 @@ public:
 
             tiempo++;
 
+            cout << "Tiempo: " << tiempo << endl << endl;
+
             ventanas.join();
+            cocina.join();
+            retiro.join();
         }
 
         cola.join();

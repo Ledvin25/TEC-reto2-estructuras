@@ -73,7 +73,7 @@ public:
             double averageWaitTimeInSeconds = chrono::duration_cast<chrono::microseconds>(
                 waitTimes.back() - waitTimes[0]
             ).count() / (1e6 * removedCount);
-            cout << "Tiempo promedio de espera: " << averageWaitTimeInSeconds << " segundos" << endl;
+            cout << "Tiempo promedio de espera: " << averageWaitTimeInSeconds << " segundos" << endl << endl;
         }
         else
         {
