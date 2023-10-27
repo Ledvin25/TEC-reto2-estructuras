@@ -239,6 +239,8 @@ public:
    {
         // Comprobar que haya inventario suficiente
 
+        bool hayInventario = true;
+
         for (Food& comida : order.getFood())
         {
             for (string ingredient : comida.getIngredients())
@@ -247,11 +249,13 @@ public:
                 {
                     // Comprar ingredientes
                     inventory.buyFoodIngredient(ingredient);
-                    order.prepare();
+                    cout << "COMPRAAAAAAAAAAAAAAAAAAAAAAAAAAARR1" << endl << endl << endl;
+                    hayInventario = false;
                 }
                 else
                 {
                     // Usar ingredientes
+                    cout << "USAAAAAAAAAAAAAAAARRRRRRRR" << endl << endl << endl;
                     inventory.UseFoodIngredientByName(ingredient);
                 }
             }
@@ -264,12 +268,14 @@ public:
                 if (!inventory.quantityIngredientDrink(ingredient))
                 {
                     // Comprar ingredientes
+                    cout << "COMPRAAAAAAAAAAAAAAAAAAAAAAAAAAARR2" << endl << endl << endl;
                     inventory.buyDrinkIngredient(ingredient);
-                    order.prepare();
+                    hayInventario = false;
                 }
                 else
                 {
                     // Usar ingredientes
+                    cout << "USAAAAAAAAAAAAAAAARRRRRRRR" << endl << endl << endl;
                     inventory.UseDrinkIngredientByName(ingredient);
                 }
             }
@@ -282,17 +288,26 @@ public:
                 if (!inventory.quantityIngredientDessert(ingredient))
                 {
                     // Comprar ingredientes
+                    cout << "COMPRAAAAAAAAAAAAAAAAAAAAAAAAAAARR3 " << ingredient << endl << endl << endl;
                     inventory.buyDessertIngredient(ingredient);
-                    order.prepare();
+                    hayInventario = false;
                 }
                 else
                 {
                     // Usar ingredientes
+                    cout << "USAAAAAAAAAAAAAAAARRRRRRRR" << endl << endl << endl;
                     inventory.UseDessertIngredientByName(ingredient);
                 }
             }
         }
+
+        if (!hayInventario)
+        {
+            prepararPedido(order);
+        }
+
         order.prepare();
+        cout << "Preparando el pedido " << order.getIdOrder() << endl << endl;
     }
 
     int EntregarAlCliente(int ID)
@@ -319,15 +334,13 @@ public:
         int NumVentana = 1;
         for (DeliveryWindow& window : ventanasRetiro) 
         {
-            for (int i = 0; i < window.getClientes().size(); i++)
-            {
-                if (order.getIdOrder() == window.getClientes().obtener_dato(i))
+           
+                if (order.getIdOrder() == window.getClientes().front())
                 {
-                    cout << "Cliente que quiere retirar: " << window.getClientes().obtener_dato(i) << " en Ventana: " << NumVentana << endl << endl;
+                    cout << "Cliente que quiere retirar: " << window.getClientes().front() << " en Ventana: " << NumVentana << endl << endl;
                     order.pay();
                     break;
                 }
-            } 
             NumVentana++;
         }
     }
@@ -339,16 +352,13 @@ public:
         int NumVentana = 1;
         for (DeliveryWindow& window : ventanasRetiro) 
         {
-            for (int i = 0; i < window.getClientes().size(); i++)
+            if (order.getIdOrder() == window.getClientes().front())
             {
-                if (order.getIdOrder() == window.getClientes().obtener_dato(i))
-                {
-                    cout << "Cliente que retiró la orden: " << order.getIdOrder() << " en Ventana: " << NumVentana << endl << endl;
-                    order.deliver();
-                    window.removeClient();
-                    break;
-                }
-            } 
+                cout << "Cliente que retiró la orden: " << order.getIdOrder() << " en Ventana: " << NumVentana << endl << endl;
+                order.deliver();
+                window.removeClient();
+                break;
+            }
             NumVentana++;
         }
     }
@@ -402,16 +412,17 @@ public:
             return;
         }
 
-        int id = 0;
-        prepararPedido(orders.obtener_dato(id));
 
-        cout << "Se preparó el pedido " << id << endl << endl;
+        if(orders.front().getStatus() != PROCESADO){return;}
+
+        prepararPedido(orders.front());
+
+        cout << "Se preparó el pedido " << orders.front().getIdOrder() << endl << endl;
 
         int duracion = 120 / tiempoSimulacionHora;
 
         std::this_thread::sleep_for(std::chrono::seconds(duracion));
 
-        id++;
     }
 
     void deliveryWork()
@@ -423,7 +434,14 @@ public:
 
         int ID = EntregarAlCliente(ClientesAtendidos.pop());
 
-        pagarPedido(orders.obtener_dato(ID));
+        cout << orders.size() << " " << orders.front().getStatus() << " ID: " << ID << endl << endl;
+
+        if (orders.size() < ID || orders.front().getStatus() != 2)
+        {
+            return;
+        }
+
+        pagarPedido(orders.front());
 
         cout << "Se pagó el pedido " << ID << endl << endl;
 
@@ -431,7 +449,7 @@ public:
 
         std::this_thread::sleep_for(std::chrono::seconds(duracion));
 
-        retirarPedido(orders.obtener_dato(ID));
+        retirarPedido(orders.front());
 
         cout << "Se retiró el pedido " << ID << endl << endl;
 
@@ -452,7 +470,7 @@ public:
         {
             std::thread ventanas(&Simulation::windowWork, this); // se pasa al cliente a las colas de las distintas ventanas
             std::thread cocina(&Simulation::kitchen, this); // se prepara cada pedido
-            std::thread retiro(&Simulation::deliveryWork, this); // se pasan los clientes de las colas de las ventanas para ordenar para una cola para ir a la sventanas a retirar
+            //std::thread retiro(&Simulation::deliveryWork, this); // se pasan los clientes de las colas de las ventanas para ordenar para una cola para ir a la sventanas a retirar
             
             int factorDeEscala = tiempoSimulacionHora;
             std::this_thread::sleep_for(std::chrono::seconds(1) / factorDeEscala);
@@ -463,7 +481,7 @@ public:
 
             ventanas.join();
             cocina.join();
-            retiro.join();
+            //retiro.join();
         }
 
         cola.join();

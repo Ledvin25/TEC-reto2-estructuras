@@ -31,8 +31,7 @@ public:
         waitTimes.push_back(endTime);
         removedCount++;
         printStackInfo();
-        
-
+    
         return result;
     }
 

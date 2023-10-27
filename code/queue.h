@@ -38,12 +38,12 @@ public:
         return result;
     }
 
-    T front()
+    T& front()
     {
         return queueList.front();
     }
 
-    T back()
+    T& back()
     {
         return queueList.back();
     }
